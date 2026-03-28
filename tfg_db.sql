@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS productos (
 CREATE TABLE IF NOT EXISTS imagenes_producto (
     id INT AUTO_INCREMENT PRIMARY KEY,
     producto_id INT NOT NULL,
-    url VARCHAR(255),
+    imagen VARCHAR(255),
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
 );
 

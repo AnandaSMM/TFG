@@ -1,0 +1,10 @@
+.git
+.gitignore
+.gitattributes
+node_modules
+frontend/node_modules
+backend/vendor
+backend/node_modules
+backend/storage/logs
+backend/bootstrap/cache
+docker/mysql/dbdata

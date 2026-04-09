@@ -1,7 +1,6 @@
 CREATE DATABASE IF NOT EXISTS marketplace;
 USE marketplace;
 
--- USUARIOS
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -12,7 +11,6 @@ CREATE TABLE IF NOT EXISTS usuarios (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- PRODUCTOS (ahora con opción de venta directa)
 CREATE TABLE IF NOT EXISTS productos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
@@ -22,11 +20,11 @@ CREATE TABLE IF NOT EXISTS productos (
     precio_alquiler_dia DECIMAL(10,2),
     vendido BOOLEAN DEFAULT FALSE,
     disponible BOOLEAN DEFAULT TRUE,
+    localidad VARCHAR(150) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
--- IMÁGENES
 CREATE TABLE IF NOT EXISTS imagenes_producto (
     id INT AUTO_INCREMENT PRIMARY KEY,
     producto_id INT NOT NULL,
@@ -34,13 +32,11 @@ CREATE TABLE IF NOT EXISTS imagenes_producto (
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
 );
 
--- CATEGORIAS
 CREATE TABLE IF NOT EXISTS categorias (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) UNIQUE NOT NULL
 );
 
--- RELACION N:M PRODUCTOS - CATEGORIAS
 CREATE TABLE IF NOT EXISTS producto_categoria (
     producto_id INT NOT NULL,
     categoria_id INT NOT NULL,
@@ -49,7 +45,6 @@ CREATE TABLE IF NOT EXISTS producto_categoria (
     FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE CASCADE
 );
 
--- ALQUILERES
 CREATE TABLE IF NOT EXISTS alquileres (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT,
@@ -63,7 +58,6 @@ CREATE TABLE IF NOT EXISTS alquileres (
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE SET NULL
 );
 
--- INSTALACIONES (API externa)
 CREATE TABLE IF NOT EXISTS instalaciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(150) NOT NULL,
@@ -74,7 +68,6 @@ CREATE TABLE IF NOT EXISTS instalaciones (
     imagen VARCHAR(255)
 );
 
--- CATEGORIAS INSTALACIONES
 CREATE TABLE IF NOT EXISTS instalacion_categoria (
     instalacion_id INT NOT NULL,
     categoria_id INT NOT NULL,
@@ -83,7 +76,6 @@ CREATE TABLE IF NOT EXISTS instalacion_categoria (
     FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE CASCADE
 );
 
--- VALORACIONES
 CREATE TABLE IF NOT EXISTS valoraciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT,
@@ -95,7 +87,6 @@ CREATE TABLE IF NOT EXISTS valoraciones (
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
 );
 
--- FAVORITOS
 CREATE TABLE IF NOT EXISTS favoritos (
     usuario_id INT,
     producto_id INT,
@@ -104,7 +95,6 @@ CREATE TABLE IF NOT EXISTS favoritos (
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
 );
 
--- MENSAJES
 CREATE TABLE IF NOT EXISTS mensajes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     emisor_id INT,

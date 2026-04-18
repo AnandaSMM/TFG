@@ -1,0 +1,96 @@
+<div class="container min-vh-100 d-flex justify-content-center align-items-center bg-light">
+  <div
+    class="card shadow border-0 p-4"
+    style="width: 100%; max-width: 420px; border-radius: 20px;"
+  >
+    <div class="text-center mb-4">
+      <h2 class="fw-bold text-primary">Crear cuenta</h2>
+      <p class="text-muted mb-0">Regístrate para continuar</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Nombre</label>
+        <input
+          type="text"
+          class="form-control form-control-lg"
+          formControlName="nombre"
+          placeholder="Tu nombre"
+        >
+        <small
+          class="text-danger"
+          *ngIf="registerForm.get('nanombreme')?.invalid && registerForm.get('nombre')?.touched"
+        >
+          El nombre es obligatorio
+        </small>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Correo electrónico</label>
+        <input
+          type="email"
+          class="form-control form-control-lg"
+          formControlName="email"
+          placeholder="ejemplo@correo.com"
+        >
+        <small
+          class="text-danger"
+          *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+        >
+          Introduce un email válido
+        </small>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Contraseña</label>
+        <input
+          type="password"
+          class="form-control form-control-lg"
+          formControlName="password"
+          placeholder="********"
+        >
+        <small
+          class="text-danger"
+          *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+        >
+          La contraseña debe tener al menos 6 caracteres
+        </small>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Confirmar contraseña</label>
+        <input
+          type="password"
+          class="form-control form-control-lg"
+          formControlName="password_confirmation"
+          placeholder="********"
+        >
+        <small
+          class="text-danger"
+          *ngIf="registerForm.get('password_confirmation')?.invalid && registerForm.get('password_confirmation')?.touched"
+        >
+          Debes confirmar la contraseña
+        </small>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger py-2">
+        {{ errorMessage }}
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary btn-lg w-100 rounded-pill"
+        [disabled]="loading"
+      >
+        <span *ngIf="!loading">Registrarse</span>
+        <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
+      </button>
+    </form>
+
+    <p class="text-center mt-4 mb-0 text-muted">
+      ¿Ya tienes cuenta?
+      <a routerLink="/login" class="text-decoration-none fw-semibold">Inicia sesión</a>
+    </p>
+  </div>
+</div>

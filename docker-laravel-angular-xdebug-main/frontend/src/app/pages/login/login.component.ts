@@ -40,7 +40,7 @@ export class LoginComponent {
         }
 
         this.errorMessage = '';
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         console.log('ERROR LOGIN:', err);

@@ -1,0 +1,87 @@
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">Productos</h2>
+
+  <div class="row justify-content-center mb-4">
+    <div class="col-md-8">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar productos..."
+        [(ngModel)]="busqueda"
+        (input)="filtrarProductos()"
+      />
+    </div>
+  </div>
+
+  <div *ngIf="cargando" class="text-center">
+    <p>Cargando productos...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger text-center">
+    {{ error }}
+  </div>
+
+  <div
+    *ngIf="!cargando && !error && productosFiltrados.length === 0"
+    class="alert alert-warning text-center"
+  >
+    No se encontraron productos
+  </div>
+
+  <div class="row g-4" *ngIf="!cargando && !error && productosFiltrados.length > 0">
+    <div class="col-md-3" *ngFor="let producto of productosFiltrados">
+      <div class="card h-100 shadow-sm">
+
+        <div class="position-relative">
+          <img
+            [src]="getImagenActual(producto)"
+            class="card-img-top"
+            alt="Imagen del producto"
+            style="height: 200px; object-fit: cover;"
+          />
+
+          <button
+            *ngIf="producto.imagenes && producto.imagenes.length > 1"
+            class="btn btn-dark btn-sm position-absolute top-50 start-0 translate-middle-y ms-2"
+            type="button"
+            (click)="anteriorImagen(producto)"
+          >
+            ‹
+          </button>
+
+          <button
+            *ngIf="producto.imagenes && producto.imagenes.length > 1"
+            class="btn btn-dark btn-sm position-absolute top-50 end-0 translate-middle-y me-2"
+            type="button"
+            (click)="siguienteImagen(producto)"
+          >
+            ›
+          </button>
+        </div>
+
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ producto.nombre }}</h5>
+
+          <p class="card-text text-muted">
+            {{ producto.localidad || 'Sin localidad' }}
+          </p>
+
+          <p class="card-text">
+            {{ producto.descripcion || 'Sin descripción' }}
+          </p>
+
+          <p class="fw-bold">
+            {{ producto.precio_alquiler_dia }} €/día
+          </p>
+
+          <span
+            class="badge mt-auto"
+            [ngClass]="producto.disponible ? 'bg-success' : 'bg-danger'"
+          >
+            {{ producto.disponible ? 'Disponible' : 'No disponible' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   template: `
     <h1>Dashboard privado</h1>
+    <button (click)="goToProfile()">Mi Perfil</button>
     <button (click)="logout()">Cerrar sesión</button>
   `
 })
@@ -27,5 +28,8 @@ export class DashboardComponent {
         this.router.navigate(['/login']);
       }
     });
+  }
+  goToProfile(): void {
+    this.router.navigate(['/profile']);
   }
 }

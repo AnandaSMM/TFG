@@ -1,0 +1,31 @@
+<div style="padding: 20px; font-family: Arial, sans-serif;">
+  <button (click)='goBack()'>⬅ Volver al Dashboard</button>
+  
+  <h1>Mi Perfil (Editar Datos)</h1>
+  <hr>
+
+  <div style="margin-bottom: 15px;">
+    <label>Nombre:</label><br>
+    <input [(ngModel)]="userData.nombre" type="text" style="width: 100%; padding: 8px;">
+  </div>
+
+  <div style="margin-bottom: 15px;">
+    <label>Email:</label><br>
+    <input [(ngModel)]="userData.email" type="email" style="width: 100%; padding: 8px;">
+  </div>
+
+  <div style="margin-bottom: 15px;">
+    <label>Teléfono:</label><br>
+    <input [(ngModel)]="userData.telefono" type="text" style="width: 100%; padding: 8px;">
+  </div>
+
+  <button (click)="saveProfile()" 
+          style="background-color: green; color: white; padding: 10px 20px; border: none; cursor: pointer;">
+    Guardar Cambios
+  </button>
+  <hr style="margin-top: 30px;">
+  <button (click)="deleteAccount()" 
+          style="background-color: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;">
+    Eliminar mi cuenta
+  </button>
+</div>

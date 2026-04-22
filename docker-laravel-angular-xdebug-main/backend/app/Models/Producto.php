@@ -24,6 +24,20 @@ class Producto extends Model
     {
         return $this->hasMany(ImagenProducto::class, 'producto_id');
     }
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'usuario_id');
+    }
+    public function categorias()
+    {
+        return $this->belongsToMany(
+            Categoria::class,
+            'producto_categoria',
+            'producto_id',
+            'categoria_id'
+        );
+    }
+
 
     protected $casts = [
         'vendido' => 'boolean',

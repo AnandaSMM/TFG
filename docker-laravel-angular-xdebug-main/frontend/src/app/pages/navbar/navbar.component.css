@@ -1,10 +1,55 @@
-.custom-navbar {
-  background: linear-gradient(90deg, #3f51b5, #ff6a00);
-}
-.nav-link {
+.navbar-custom {
+  background: linear-gradient(90deg, #2c3e90, #ff6a00);
+  padding: 15px 30px;
   color: white;
+}
+
+/* Logo */
+.logo {
+  font-size: 26px;
+  font-weight: bold;
+  color: white;
+}
+
+.logo span {
+  font-weight: 400;
+}
+
+/* Menú */
+.menu {
+  list-style: none;
+  gap: 25px;
+}
+
+.menu li a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.menu li a:hover {
+  opacity: 0.7;
+}
+
+/* Icono mensaje */
+.icono {
+  position: relative;
   cursor: pointer;
 }
-.nav-link:hover {
-  text-decoration: underline;
+
+.mensaje-icono {
+  font-size: 20px;
+}
+
+/* Badge */
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: red;
+  color: white;
+  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 50%;
 }

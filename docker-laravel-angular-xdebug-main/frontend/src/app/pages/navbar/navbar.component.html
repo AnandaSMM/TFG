@@ -1,19 +1,22 @@
-<nav class="navbar custom-navbar px-4">
-  <span class="navbar-brand text-white fw-bold">Rent2play</span>
-
-  <div class="ms-auto d-flex align-items-center gap-4 text-white">
-    <a class="nav-link">Inicio</a>
-    <a class="nav-link">Instalaciones</a>
-    <a class="nav-link">Calendario</a>
-    <a class="nav-link">Mis productos</a>
-    <a class="nav-link">Mi cuenta</a>
-    <a class="nav-link">Ayuda</a>
-
-    <div class="position-relative">
-      💬
-      <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
-        3
-      </span>
+<nav class="navbar-custom">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <div class="logo">
+      Rent2<span>play</span>
     </div>
+
+    <ul class="menu d-flex align-items-center mb-0" *ngIf="!ocultarBotones">
+      <li><a routerLink="/home">Inicio</a></li>
+      <li><a routerLink="/home">Instalaciones</a></li>
+      <li><a routerLink="/home">Calendario</a></li>
+      <li><a routerLink="/home">Mis productos</a></li>
+      <li><a routerLink="/profile">Mi cuenta</a></li>
+      <li><a routerLink="/home">Ayuda</a></li>
+
+      <li class="icono">
+        <span class="mensaje-icono">💬</span>
+        <span class="badge">3</span>
+      </li>
+    </ul>
+
   </div>
 </nav>

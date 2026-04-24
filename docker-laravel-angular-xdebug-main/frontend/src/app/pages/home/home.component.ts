@@ -2,6 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
+import { CategoriaService } from '../../services/categoria.service';
 
 interface ImagenProducto {
   id: number;
@@ -9,17 +11,35 @@ interface ImagenProducto {
   imagen: string;
 }
 
-interface Producto {
+interface UsuarioProducto {
   id: number;
   nombre: string;
+  foto?: string | null;
+}
+
+interface Categoria {
+  id: number;
+  nombre: string;
+}
+
+interface Producto {
+  id: number;
+  usuario_id: number;
+  nombreUser: string;
+  usuario?: UsuarioProducto | null;
+  nombre: string;
   descripcion: string | null;
+  precio_venta: number | string | null;
   precio_alquiler_dia: number | string | null;
+  vendido?: boolean;
   disponible: boolean;
   localidad: string | null;
   imagenes: ImagenProducto[];
 }
 
 interface RespuestaProductos {
+  current_page?: number;
+  last_page?: number;
   total: number;
   data: Producto[];
 }
@@ -27,68 +47,179 @@ interface RespuestaProductos {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
   private http = inject(HttpClient);
+  private categoriaService = inject(CategoriaService);
 
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
+  categorias: Categoria[] = [];
+  categoriasSeleccionadas: number[] = [];
 
   busqueda = '';
   cargando = true;
   error = '';
+  paginaActual = 1;
+  totalPaginas = 1;
+  categoriasMenuAbierto = false; 
+  productoSeleccionado: Producto | null = null;
+  modalAbierto = false;
 
   private apiUrl = 'http://localhost:8000/api/productos';
   private baseUrl = 'http://localhost:8000/storage/';
 
-  // guarda qué imagen está viendo el usuario en cada producto
   imagenActualPorProducto: { [productoId: number]: number } = {};
 
   ngOnInit(): void {
+    this.cargarCategorias();
     this.cargarProductos();
   }
 
-  cargarProductos(): void {
-    this.cargando = true;
-    this.error = '';
-
-    this.http.get<RespuestaProductos>(this.apiUrl).subscribe({
-      next: (respuesta) => {
-        this.productos = Array.isArray(respuesta.data) ? respuesta.data : [];
-        this.productosFiltrados = [...this.productos];
-
-        // inicializar indice de imagen en 0 para cada producto
-        this.productos.forEach(producto => {
-          this.imagenActualPorProducto[producto.id] = 0;
-        });
-
-        this.cargando = false;
-        console.log('PRODUCTOS CON IMAGENES:', this.productos);
+  cargarCategorias(): void {
+    this.categoriaService.getCategorias().subscribe({
+      next: (respuesta: any) => {
+        // Ajuste aquí: Accedemos a respuesta.data
+        if (respuesta && Array.isArray(respuesta.data)) {
+          this.categorias = respuesta.data;
+        } else if (Array.isArray(respuesta)) {
+          this.categorias = respuesta;
+        } else {
+          this.categorias = [];
+        }
+        console.log('Categorías procesadas:', this.categorias);
       },
       error: (err) => {
-        console.error('ERROR CARGANDO PRODUCTOS:', err);
-        this.error = 'No se pudieron cargar los productos';
-        this.cargando = false;
+        console.error('ERROR CARGANDO CATEGORIAS:', err);
       }
     });
   }
 
-  filtrarProductos(): void {
-    const texto = this.busqueda.trim().toLowerCase();
+ cargarProductos(page: number = 1): void {
+  this.cargando = true;
+  this.error = '';
+  const termino = this.busqueda.trim();
+  let url = `${this.apiUrl}?page=${page}`;
 
-    if (!texto) {
+  if (termino) {
+    url += `&buscar=${encodeURIComponent(termino)}`;
+  }
+
+  this.categoriasSeleccionadas.forEach((id) => {
+    url += `&categorias[]=${id}`;
+  });
+
+  this.http.get<RespuestaProductos>(url).subscribe({
+    next: (respuesta) => {
+
+      this.productos = respuesta.data || []; 
       this.productosFiltrados = [...this.productos];
+      this.paginaActual = respuesta.current_page ?? 1;
+      this.totalPaginas = respuesta.last_page ?? 1;
+      
+      // Inicializar índices de imágenes
+      this.productos.forEach((p) => {
+        if (this.imagenActualPorProducto[p.id] === undefined) {
+          this.imagenActualPorProducto[p.id] = 0;
+        }
+      });
+
+      this.cargando = false;
+    },
+    error: (err) => {
+      this.error = 'No se pudieron cargar los productos';
+      this.cargando = false;
+    }
+  });
+}
+
+  filtrarProductos(): void {
+    this.paginaActual = 1;
+    this.cargarProductos(1);
+  }
+
+  cambiarPagina(page: number): void {
+    if (page < 1 || page > this.totalPaginas || page === this.paginaActual) {
       return;
     }
 
-    this.productosFiltrados = this.productos.filter((producto) =>
-      producto.nombre.toLowerCase().includes(texto) ||
-      (producto.localidad?.toLowerCase().includes(texto) ?? false) ||
-      (producto.descripcion?.toLowerCase().includes(texto) ?? false)
+    this.cargarProductos(page);
+  }
+
+  paginasVisibles(): number[] {
+    const paginas: number[] = [];
+    let inicio = Math.max(1, this.paginaActual - 2);
+    let fin = Math.min(this.totalPaginas, this.paginaActual + 2);
+
+    if (this.totalPaginas <= 5) {
+      inicio = 1;
+      fin = this.totalPaginas;
+    }
+
+    for (let i = inicio; i <= fin; i++) {
+      paginas.push(i);
+    }
+
+    return paginas;
+  }
+
+  estaCategoriaSeleccionada(categoriaId: number): boolean {
+    return this.categoriasSeleccionadas.includes(categoriaId);
+  }
+
+  toggleCategoria(categoriaId: number, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+
+    if (checked) {
+      if (!this.categoriasSeleccionadas.includes(categoriaId)) {
+        this.categoriasSeleccionadas.push(categoriaId);
+      }
+    } else {
+      this.categoriasSeleccionadas = this.categoriasSeleccionadas.filter(
+        id => id !== categoriaId
+      );
+    }
+  }
+
+  limpiarCategorias(): void {
+    this.categoriasSeleccionadas = [];
+    this.paginaActual = 1;
+    this.cargarProductos(1);
+  }
+  
+  toggleMenuCategorias(): void {
+    this.categoriasMenuAbierto = !this.categoriasMenuAbierto;
+  }
+
+  cerrarMenuCategorias(): void {
+    this.categoriasMenuAbierto = false;
+  }
+
+  aplicarFiltros(): void {
+    this.paginaActual = 1;
+    this.cargarProductos(1);
+    this.categoriasMenuAbierto = false; 
+  }
+
+  quitarCategoria(categoriaId: number): void {
+    this.categoriasSeleccionadas = this.categoriasSeleccionadas.filter(
+      id => id !== categoriaId
     );
+    this.paginaActual = 1;
+    this.cargarProductos(1);
+  }
+
+  getCategoriasSeleccionadasDetalle(): Categoria[] {
+    return this.categorias.filter(c =>
+      this.categoriasSeleccionadas.includes(c.id)
+    );
+  }
+
+  trackByCategoriaId(index: number, categoria: Categoria): number {
+    return categoria.id;
   }
 
   getImagenUrl(ruta: string | null | undefined): string {
@@ -108,7 +239,11 @@ export class HomeComponent implements OnInit {
     return this.getImagenUrl(producto.imagenes[indice]?.imagen);
   }
 
-  siguienteImagen(producto: Producto): void {
+  siguienteImagen(producto: Producto, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+
     if (!producto.imagenes || producto.imagenes.length <= 1) return;
 
     const actual = this.imagenActualPorProducto[producto.id] ?? 0;
@@ -116,11 +251,31 @@ export class HomeComponent implements OnInit {
       (actual + 1) % producto.imagenes.length;
   }
 
-  anteriorImagen(producto: Producto): void {
+  anteriorImagen(producto: Producto, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+
     if (!producto.imagenes || producto.imagenes.length <= 1) return;
 
     const actual = this.imagenActualPorProducto[producto.id] ?? 0;
     this.imagenActualPorProducto[producto.id] =
       (actual - 1 + producto.imagenes.length) % producto.imagenes.length;
+  }
+
+  abrirModal(producto: Producto): void {
+    this.productoSeleccionado = producto;
+    this.modalAbierto = true;
+    document.body.classList.add('modal-open');
+  }
+
+  cerrarModal(): void {
+    this.modalAbierto = false;
+    this.productoSeleccionado = null;
+    document.body.classList.remove('modal-open');
+  }
+
+  trackByProductoId(index: number, producto: Producto): number {
+    return producto.id;
   }
 }

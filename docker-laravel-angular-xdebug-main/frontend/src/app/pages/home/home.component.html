@@ -1,18 +1,88 @@
+<!--Barra de busqueda-->
 <div class="container mt-4">
-  <h2 class="mb-4 text-center">Productos</h2>
-
-  <div class="row justify-content-center mb-4">
-    <div class="col-md-8">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Buscar productos..."
-        [(ngModel)]="busqueda"
-        (input)="filtrarProductos()"
-      />
-    </div>
+  <div class="row justify-content-center mb-4 align-items-start">
+  <div class="col-md-5">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Buscar productos..."
+      [(ngModel)]="busqueda"
+      (input)="filtrarProductos()"
+    />
   </div>
 
+  <div class="col-md-3">
+    <div class="dropdown w-100">
+      <button
+        class="btn btn-outline-secondary dropdown-toggle w-100 text-start"
+        type="button"
+        (click)="toggleMenuCategorias()" 
+      >
+        Categorías
+        <span *ngIf="categoriasSeleccionadas.length > 0">
+          ({{ categoriasSeleccionadas.length }})
+        </span>
+      </button>
+
+      <div 
+        class="dropdown-menu w-100 p-3 shadow" 
+        [class.show]="categoriasMenuAbierto"
+        style="display: block;" 
+        *ngIf="categoriasMenuAbierto"
+      >
+        <div *ngIf="categorias.length === 0" class="text-muted small">
+          No hay categorías disponibles
+        </div>
+
+        <div
+          class="form-check mb-2"
+          *ngFor="let categoria of categorias; trackBy: trackByCategoriaId"
+        >
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [id]="'categoria-' + categoria.id"
+            [checked]="estaCategoriaSeleccionada(categoria.id)"
+            (change)="toggleCategoria(categoria.id, $event)"
+          />
+          <label class="form-check-label" [for]="'categoria-' + categoria.id">
+            {{ categoria.nombre }}
+          </label>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3 border-top pt-2">
+          <button type="button" class="btn btn-sm btn-outline-danger" (click)="limpiarCategorias()">
+            Limpiar
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-primary" (click)="aplicarFiltros()">
+            Aplicar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="d-flex flex-wrap gap-2 mb-3 justify-content-center"
+  *ngIf="categoriasSeleccionadas.length > 0"
+>
+  <span
+    class="badge rounded-pill text-bg-secondary"
+    *ngFor="let categoria of getCategoriasSeleccionadasDetalle(); trackBy: trackByCategoriaId"
+  >
+    {{ categoria.nombre }}
+    <button
+      type="button"
+      class="btn-close btn-close-white ms-2"
+      style="font-size: 0.6rem;"
+      aria-label="Quitar categoría"
+      (click)="quitarCategoria(categoria.id)"
+    ></button>
+  </span>
+</div>
+  <br>
+  <br>
   <div *ngIf="cargando" class="text-center">
     <p>Cargando productos...</p>
   </div>
@@ -29,9 +99,16 @@
   </div>
 
   <div class="row g-4" *ngIf="!cargando && !error && productosFiltrados.length > 0">
-    <div class="col-md-3" *ngFor="let producto of productosFiltrados">
-      <div class="card h-100 shadow-sm">
-
+    <div
+      class="col-md-3"
+      *ngFor="let producto of productosFiltrados; trackBy: trackByProductoId"
+    >
+      <div
+        class="card h-100 shadow-sm cursor-pointer"
+        role="button"
+        (click)="abrirModal(producto)"
+        style="cursor: pointer;"
+      >
         <div class="position-relative">
           <img
             [src]="getImagenActual(producto)"
@@ -44,7 +121,7 @@
             *ngIf="producto.imagenes && producto.imagenes.length > 1"
             class="btn btn-dark btn-sm position-absolute top-50 start-0 translate-middle-y ms-2"
             type="button"
-            (click)="anteriorImagen(producto)"
+            (click)="anteriorImagen(producto, $event)"
           >
             ‹
           </button>
@@ -53,7 +130,7 @@
             *ngIf="producto.imagenes && producto.imagenes.length > 1"
             class="btn btn-dark btn-sm position-absolute top-50 end-0 translate-middle-y me-2"
             type="button"
-            (click)="siguienteImagen(producto)"
+            (click)="siguienteImagen(producto, $event)"
           >
             ›
           </button>
@@ -62,25 +139,202 @@
         <div class="card-body d-flex flex-column">
           <h5 class="card-title">{{ producto.nombre }}</h5>
 
-          <p class="card-text text-muted">
+          <p class="card-text text-muted mb-1">
             {{ producto.localidad || 'Sin localidad' }}
           </p>
 
-          <p class="card-text">
-            {{ producto.descripcion || 'Sin descripción' }}
-          </p>
-
-          <p class="fw-bold">
-            {{ producto.precio_alquiler_dia }} €/día
-          </p>
-
-          <span
-            class="badge mt-auto"
-            [ngClass]="producto.disponible ? 'bg-success' : 'bg-danger'"
-          >
-            {{ producto.disponible ? 'Disponible' : 'No disponible' }}
-          </span>
+          <p class="fw-bold mb-2">
+              {{ producto.precio_alquiler_dia || 'No indicado' }} €/día
+            </p>
+            <span
+              [ngStyle]="{ color: producto.disponible ? '#3F8B32' : '#8B323F' }"
+            >
+              {{ producto.disponible ? 'Disponible' : 'No disponible' }}
+            </span>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--paginacion-->
+
+<div class="d-flex justify-content-center mt-4" *ngIf="!cargando && !error && totalPaginas > 1">
+  <nav aria-label="Paginación de productos">
+    <ul class="pagination">
+
+      <li class="page-item" [class.disabled]="paginaActual === 1">
+        <button class="page-link" (click)="cambiarPagina(paginaActual - 1)">
+          Anterior
+        </button>
+      </li>
+
+      <li
+        class="page-item"
+        *ngFor="let pagina of paginasVisibles()"
+        [class.active]="pagina === paginaActual"
+      >
+        <button class="page-link" (click)="cambiarPagina(pagina)">
+          {{ pagina }}
+        </button>
+      </li>
+
+      <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+        <button class="page-link" (click)="cambiarPagina(paginaActual + 1)">
+          Siguiente
+        </button>
+      </li>
+
+    </ul>
+  </nav>
+</div>
+
+<!-- BACKDROP -->
+<div
+  *ngIf="modalAbierto"
+  class="modal-backdrop fade show"
+  (click)="cerrarModal()"
+></div>
+
+<!-- MODAL -->
+<div
+  *ngIf="modalAbierto && productoSeleccionado"
+  class="modal fade show d-block"
+  tabindex="-1"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ productoSeleccionado.nombre }}</h5>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Cerrar"
+          (click)="cerrarModal()"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Carrusel -->
+        <div class="position-relative mb-4">
+          <img
+            [src]="getImagenActual(productoSeleccionado)"
+            class="img-fluid w-100 rounded"
+            alt="Imagen del producto"
+            style="max-height: 420px; object-fit: cover;"
+          />
+
+          <button
+            *ngIf="productoSeleccionado.imagenes && productoSeleccionado.imagenes.length > 1"
+            class="btn btn-dark position-absolute top-50 start-0 translate-middle-y ms-2"
+            type="button"
+            (click)="anteriorImagen(productoSeleccionado, $event)"
+          >
+            ‹
+          </button>
+
+          <button
+            *ngIf="productoSeleccionado.imagenes && productoSeleccionado.imagenes.length > 1"
+            class="btn btn-dark position-absolute top-50 end-0 translate-middle-y me-2"
+            type="button"
+            (click)="siguienteImagen(productoSeleccionado, $event)"
+          >
+            ›
+          </button>
+        </div>
+
+        <!-- Datos -->
+        <div class="mb-3">
+          <a
+            [routerLink]="['/perfil', productoSeleccionado.usuario_id]"
+            class="text-decoration-none fw-semibold"
+          >
+            {{ productoSeleccionado.usuario?.nombre || 'Ver perfil' }}
+          </a>
+        </div>
+
+        <div class="col-md-6">
+            <div class="rounded p-3 h-100">
+              <h6 class="fw-bold mb-1">Nombre</h6>
+              <p class="mb-0">{{ productoSeleccionado.nombre }}</p>
+            </div>
+          </div>
+
+        <div class="mb-3">
+          <div class="rounded p-3 h-100">
+            <h6 class="fw-bold mb-1">Descripción</h6>
+            <p class="mb-0">
+              {{ productoSeleccionado.descripcion || 'Sin descripción' }}
+            </p>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="rounded p-3 h-100">
+              <h6 class="fw-bold mb-1">Precio de venta</h6>
+              <p class="mb-0">
+                {{
+                  productoSeleccionado.precio_venta !== null &&
+                  productoSeleccionado.precio_venta !== undefined
+                    ? productoSeleccionado.precio_venta + ' €'
+                    : 'No disponible'
+                }}
+              </p>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="rounded p-3 h-100">
+              <h6 class="fw-bold mb-1">Precio de alquiler</h6>
+              <p class="mb-0">
+                {{
+                  productoSeleccionado.precio_alquiler_dia !== null &&
+                  productoSeleccionado.precio_alquiler_dia !== undefined
+                    ? productoSeleccionado.precio_alquiler_dia + ' €/día'
+                    : 'No disponible'
+                }}
+              </p>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="rounded p-3 h-100">
+              <h6 class="fw-bold mb-1">Localidad</h6>
+              <p class="mb-0">
+                {{ productoSeleccionado.localidad || 'Sin localidad' }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          *ngIf="productoSeleccionado.disponible"
+          type="button"
+          class="btn btn-success"
+        >
+          Alquilar
+        </button>
+
+        <button
+          *ngIf="!productoSeleccionado.disponible"
+          type="button"
+          class="btn btn-warning"
+        >
+          Ver disponibilidad
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="cerrarModal()"
+        >
+          Cerrar
+        </button>
       </div>
     </div>
   </div>

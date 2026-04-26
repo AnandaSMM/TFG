@@ -1,236 +1,71 @@
-/*import {
-  Component,
-  ChangeDetectionStrategy,
-  ViewChild,
-  TemplateRef,
-  inject,
-} from '@angular/core';
-import {
-  startOfDay,
-  endOfDay,
-  subDays,
-  addDays,
-  endOfMonth,
-  isSameDay,
-  isSameMonth,
-  addHours,
-} from 'date-fns';
-import { Subject } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {
-  provideCalendar,
-  CalendarEvent,
-  CalendarEventAction,
-  CalendarEventTimesChangedEvent,
-  CalendarView,
-  CalendarPreviousViewDirective,
-  CalendarTodayDirective,
-  CalendarNextViewDirective,
-  CalendarMonthViewComponent,
-  CalendarWeekViewComponent,
-  CalendarDayViewComponent,
-  CalendarDatePipe,
-  DateAdapter,
-} from 'angular-calendar';
-import { EventColor } from 'calendar-utils';
-import { FormsModule } from '@angular/forms';
-import {
-  FlatpickrDirective,
-  provideFlatpickrDefaults,
-} from 'angularx-flatpickr';
-import { JsonPipe } from '@angular/common';
-import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
-
-const colors: Record<string, EventColor> = {
-  red: {
-    primary: '#ad2121',
-    secondary: '#FAE3E3',
-  },
-  blue: {
-    primary: '#1e90ff',
-    secondary: '#D1E8FF',
-  },
-  yellow: {
-    primary: '#e3bc08',
-    secondary: '#FDF1BA',
-  },
-};
+import { Component } from '@angular/core';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import {  } from "module";
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'mwl-demo-component',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: [
-    `
-      h3 {
-        margin: 0 0 10px;
-      }
-
-      pre {
-        background-color: #f5f5f5;
-        padding: 15px;
-      }
-    `,
-  ],
-  templateUrl: 'template.html',
-  imports: [
-    CalendarPreviousViewDirective,
-    CalendarTodayDirective,
-    CalendarNextViewDirective,
-    CalendarMonthViewComponent,
-    CalendarWeekViewComponent,
-    CalendarDayViewComponent,
-    FormsModule,
-    JsonPipe,
-    CalendarDatePipe,
-    FlatpickrDirective,
-  ],
-  providers: [
-    provideFlatpickrDefaults(),
-    provideCalendar({ provide: DateAdapter, useFactory: adapterFactory }),
-  ],
+  selector: 'app-calendario',
+  standalone: true,
+  imports: [FullCalendarModule,CommonModule],
+  templateUrl: './calendar.component.html',
 })
-export class DemoComponent {
-  @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
+export class CalendarioComponent {
+  alquileres = [
+    {
+      nombre: 'Balón de Baloncesto',
+      propietario: 'Juan Pérez',
+      fecha_devolucion: '2026-04-15',
+      precio_alquiler_dia: 5,
+      imagen: 'assets/balon.jpg',
+      estado: 'Pendiente'
+    },
+    {
+      nombre: 'Raqueta de Tenis',
+      propietario: 'María García',
+      fecha_devolucion: '2026-04-12',
+      precio_alquiler_dia: 8,
+      imagen: 'assets/raqueta.jpg',
+      estado: 'Pendiente'
+    }
 
-  view: CalendarView = CalendarView.Month;
+  ];
+  calendarOptions = {
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+    initialView: 'dayGridMonth',
+    locale: 'es',
+    height: 'auto',
 
-  CalendarView = CalendarView;
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    },
 
-  viewDate: Date = new Date();
+    buttonText: {
+      today: 'Hoy',
+      month: 'Mes',
+      week: 'Semana',
+      day: 'Día'
+    },
 
-  modalData: {
-    action: string;
-    event: CalendarEvent;
+    events: [
+      {
+        title: 'Devolución',
+        date: '2026-04-25',
+        color: '#ff7a1a'
+      },
+      {
+        title: 'Producto alquilado',
+        date: '2026-04-25'
+      },
+      {
+        title: 'Reserva pendiente',
+        date: '2026-04-28'
+      }
+    ]
   };
 
-  actions: CalendarEventAction[] = [
-    {
-      label: '<i class="fas fa-fw fa-pencil-alt"></i>',
-      a11yLabel: 'Edit',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.handleEvent('Edited', event);
-      },
-    },
-    {
-      label: '<i class="fas fa-fw fa-trash-alt"></i>',
-      a11yLabel: 'Delete',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.events = this.events.filter((iEvent) => iEvent !== event);
-        this.handleEvent('Deleted', event);
-      },
-    },
-  ];
-
-  refresh = new Subject<void>();
-
-  events: CalendarEvent[] = [
-    {
-      start: subDays(startOfDay(new Date()), 1),
-      end: addDays(new Date(), 1),
-      title: 'A 3 day event',
-      color: { ...colors.red },
-      actions: this.actions,
-      allDay: true,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true,
-      },
-      draggable: true,
-    },
-    {
-      start: startOfDay(new Date()),
-      title: 'An event with no end date',
-      color: { ...colors.yellow },
-      actions: this.actions,
-    },
-    {
-      start: subDays(endOfMonth(new Date()), 3),
-      end: addDays(endOfMonth(new Date()), 3),
-      title: 'A long event that spans 2 months',
-      color: { ...colors.blue },
-      allDay: true,
-    },
-    {
-      start: addHours(startOfDay(new Date()), 2),
-      end: addHours(new Date(), 2),
-      title: 'A draggable and resizable event',
-      color: { ...colors.yellow },
-      actions: this.actions,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true,
-      },
-      draggable: true,
-    },
-  ];
-
-  activeDayIsOpen: boolean = true;
-
-  private modal = inject(NgbModal);
-
-  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
-    if (isSameMonth(date, this.viewDate)) {
-      if (
-        (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
-        events.length === 0
-      ) {
-        this.activeDayIsOpen = false;
-      } else {
-        this.activeDayIsOpen = true;
-      }
-      this.viewDate = date;
-    }
-  }
-
-  eventTimesChanged({
-    event,
-    newStart,
-    newEnd,
-  }: CalendarEventTimesChangedEvent): void {
-    this.events = this.events.map((iEvent) => {
-      if (iEvent === event) {
-        return {
-          ...event,
-          start: newStart,
-          end: newEnd,
-        };
-      }
-      return iEvent;
-    });
-    this.handleEvent('Dropped or resized', event);
-  }
-
-  handleEvent(action: string, event: CalendarEvent): void {
-    this.modalData = { event, action };
-    this.modal.open(this.modalContent, { size: 'lg' });
-  }
-
-  addEvent(): void {
-    this.events = [
-      ...this.events,
-      {
-        title: 'New event',
-        start: startOfDay(new Date()),
-        end: endOfDay(new Date()),
-        color: colors.red,
-        draggable: true,
-        resizable: {
-          beforeStart: true,
-          afterEnd: true,
-        },
-      },
-    ];
-  }
-
-  deleteEvent(eventToDelete: CalendarEvent) {
-    this.events = this.events.filter((event) => event !== eventToDelete);
-  }
-
-  setView(view: CalendarView) {
-    this.view = view;
-  }
-
-  closeOpenMonthViewDay() {
-    this.activeDayIsOpen = false;
-  }
 }

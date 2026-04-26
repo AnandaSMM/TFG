@@ -314,20 +314,9 @@
       <div class="modal-footer">
         <button
           *ngIf="productoSeleccionado.disponible"
-          type="button"
-          class="btn btn-success"
         >
-          Alquilar
+        <a [routerLink]="['/alquilar', productoSeleccionado.id]" class="btn btn-primary">Alquilar</a>
         </button>
-
-        <button
-          *ngIf="!productoSeleccionado.disponible"
-          type="button"
-          class="btn btn-warning"
-        >
-          Ver disponibilidad
-        </button>
-
         <button
           type="button"
           class="btn btn-secondary"

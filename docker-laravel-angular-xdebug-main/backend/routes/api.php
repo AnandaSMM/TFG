@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\AlquilerController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -21,3 +22,5 @@ Route::post('/categorias', [CategoriaController::class, 'crearCategoria']);
 Route::get('/categorias/{id}/productos', [CategoriaController::class, 'productosPorCategoria']);
 Route::post('/productos/{id}/categorias', [CategoriaController::class, 'asignarCategorias']);
 Route::get('/productos/{id}/categorias', [CategoriaController::class, 'categoriasPorProducto']);
+
+Route::post('/productos/{id}/alquilar', [AlquilerController::class, 'alquilar']);

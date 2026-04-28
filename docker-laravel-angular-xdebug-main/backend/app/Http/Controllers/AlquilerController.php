@@ -9,8 +9,8 @@ use Carbon\Carbon;
 
 class AlquilerController extends Controller 
 {
-  public function alquilar(Request $request, $id)
-  {
+    public function alquilar(Request $request, $id)
+    {
     $request->validate([
         'fecha_inicio' => 'required|date',
         'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
@@ -24,40 +24,87 @@ class AlquilerController extends Controller
             'message' => 'Este producto no está disponible'
         ], 400);
     }
-  
+
     $fechaInicio = $request->fecha_inicio;
     $fechaFin = $request->fecha_fin;
-  
+
     $existeAlquiler = Alquiler::where('producto_id', $producto->id)
         ->where('estado', 'activo')
         ->where('fecha_inicio', '<=', $fechaFin)
         ->where('fecha_fin', '>=', $fechaInicio)
         ->exists();
-      if ($existeAlquiler) {
+        if ($existeAlquiler) {
         return response()->json([
             'message' => 'El producto ya está alquilado en esas fechas'
         ], 409);
-      }
-  
-      $inicio = Carbon::parse($fechaInicio);
-      $fin = Carbon::parse($fechaFin);
-      $dias = $inicio->diffInDays($fin) + 1;
-      $precioTotal = $dias * $producto->precio_alquiler_dia;
-  
-      $alquiler = Alquiler::create([
-          'usuario_id' => 1,
-          'producto_id' => $producto->id,
-          'fecha_inicio' => $fechaInicio,
-          'fecha_fin' => $fechaFin,
-          'precio_total' => $precioTotal,
-          'estado' => 'activo',
-          'opcion_compra' => $request->opcion_compra ?? false
-      ]);
-  
-      return response()->json([
-          'message' => 'Producto alquilado correctamente',
-          'alquiler' => $alquiler
-      ], 201);
-  }
+        }
+
+        $inicio = Carbon::parse($fechaInicio);
+        $fin = Carbon::parse($fechaFin);
+        $dias = $inicio->diffInDays($fin) + 1;
+        $precioTotal = $dias * $producto->precio_alquiler_dia;
+
+        $alquiler = Alquiler::create([
+            'usuario_id' => $request->user()->id,
+            'producto_id' => $producto->id,
+            'fecha_inicio' => $fechaInicio,
+            'fecha_fin' => $fechaFin,
+            'precio_total' => $precioTotal,
+            'estado' => 'activo',
+            'opcion_compra' => $request->opcion_compra ?? false
+        ]);
+
+        return response()->json([
+            'message' => 'Producto alquilado correctamente',
+            'alquiler' => $alquiler
+        ], 201);
+    }
+    public function listarReservados(Request $request)
+    {
+        $usuario = $request->user();
+        if (!$usuario) {
+            return response()->json([
+                'message' => 'Usuario no autenticado'
+            ], 401);
+        }
+        $reservas = Alquiler::with('producto')
+            ->where('usuario_id', $usuario->id)
+            ->where('estado', 'activo')
+            ->orderBy('fecha_inicio', 'asc')
+            ->get();
+
+        return response()->json([
+            'message' => 'Reservas obtenidas correctamente',
+            'reservas' => $reservas
+        ]);
+    }
+    public function listarProductosPrestados(Request $request)
+    {
+        $usuario = $request->user();
+        if (!$usuario) {
+            return response()->json([
+                'message' => 'Usuario no autenticado'
+            ], 401);
+        }
+        $productos = Producto::with(['alquileres' => function ($query) {
+                $query->where('estado', 'activo')
+                    ->orderBy('fecha_inicio', 'asc');
+            }])
+            ->where('usuario_id', $usuario->id)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($producto) {
+                $producto->esta_alquilado = $producto->alquileres->isNotEmpty();
+                $producto->alquiler_activo = $producto->alquileres->first();
+
+                return $producto;
+            });
+
+        return response()->json([
+            'message' => 'Productos prestados obtenidos correctamente',
+            'prestados' => $productos
+        ]);
+    }
+
 }
    

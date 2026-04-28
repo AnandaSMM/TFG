@@ -42,7 +42,6 @@ class Producto extends Model
         return $this->hasMany(Alquiler::class, 'producto_id');
     }
 
-
     protected $casts = [
         'vendido' => 'boolean',
         'disponible' => 'boolean',

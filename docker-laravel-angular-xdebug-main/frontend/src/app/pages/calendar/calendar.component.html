@@ -1,12 +1,19 @@
-<!--<full-calendar [options]="calendarOptions"></full-calendar>-->
 <div class="container-fluid py-4 bg-light min-vh-100">
   <div class="d-flex justify-content-center mb-4">
     <div class="btn-group shadow-sm">
-      <button class="btn btn-primary px-5 py-3 fw-bold active">
+      <button
+        class="btn px-5 py-3 fw-bold"
+        [ngClass]="modo === 'reservados' ? 'btn-primary active' : 'btn-outline-primary'"
+        (click)="cargarReservas()"
+      >
         Mis Devoluciones
       </button>
 
-      <button class="btn btn-outline-primary px-5 py-3 fw-bold">
+      <button
+        class="btn px-5 py-3 fw-bold"
+        [ngClass]="modo === 'prestados' ? 'btn-primary active' : 'btn-outline-primary'"
+        (click)="cargarPrestados()"
+      >
         Productos Prestados
       </button>
     </div>
@@ -32,57 +39,48 @@
       <div class="card border-0 shadow-sm h-100">
         <div class="card-header bg-white p-4">
           <h3 class="fw-bold text-primary mb-0">
-            Mis Productos Alquilados
+            {{ modo === 'reservados' ? 'Mis Productos Alquilados' : 'Mis Productos Prestados' }}
           </h3>
         </div>
-
-        <div class="card-body p-3">
-
+        <div class="card-body p-3 overflow-auto" style="max-height: 600px;">
+          <ng-container *ngIf="!cargando">
           <div
             class="card border-0 shadow-sm mb-3"
             *ngFor="let alquiler of alquileres"
           >
             <div class="card-body">
               <div class="row align-items-center">
-                <div class="col-3">
-                  <img
-                    [src]="alquiler.imagen"
-                    [alt]="alquiler.nombre"
-                    class="img-fluid rounded"
-                    style="height: 125px; object-fit: cover; width: 100%;"
-                  >
-                </div>
-                <div class="col-7">
+
+                <div class="col-9">
                   <h5 class="fw-bold text-primary mb-2">
-                    {{ alquiler.nombre }}
+                    {{ alquiler.producto?.nombre }}
                   </h5>
 
                   <p class="text-muted small mb-1">
-                    Alquilado de
+                    Fecha inicio
                   </p>
 
                   <p class="fw-semibold mb-2">
-                    {{ alquiler.propietario }}
+                    {{ alquiler.fecha_inicio | date:'d MMM y' }}
                   </p>
 
                   <p class="text-muted small mb-1">
-                    Devolución
+                    Fecha devolución
                   </p>
 
                   <p class="fw-bold text-warning mb-2">
-                    {{ alquiler.fecha_devolucion | date:'d MMM y' }}
+                    {{ alquiler.fecha_fin | date:'d MMM y' }}
                   </p>
 
                   <p class="fw-bold text-primary mb-0">
-                    {{ alquiler.precio_alquiler_dia }}€/día
+                    Total: {{ alquiler.precio_total }} €
                   </p>
                 </div>
 
-                <!-- Estado -->
-                <div class="col-2 text-end">
+                <div class="col-3 text-end">
                   <span
                     class="badge rounded-pill"
-                    [ngClass]="alquiler.estado === 'Pendiente'
+                    [ngClass]="alquiler.estado === 'activo'
                       ? 'bg-success'
                       : 'bg-secondary'"
                   >
@@ -93,11 +91,17 @@
               </div>
             </div>
           </div>
-
-          <div *ngIf="alquileres.length === 0" class="text-center text-muted py-5">
-            No tienes productos alquilados.
+          </ng-container>
+          <div *ngIf="cargando" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2 text-muted">Cargando...</p>
           </div>
 
+          <div *ngIf="!cargando && alquileres.length === 0" class="text-center text-muted py-5">
+            {{ modo === 'reservados'
+              ? 'No tienes productos alquilados.'
+              : 'No tienes productos prestados.' }}
+          </div>
         </div>
       </div>
     </div>

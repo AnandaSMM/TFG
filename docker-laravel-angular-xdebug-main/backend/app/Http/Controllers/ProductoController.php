@@ -10,36 +10,36 @@ use Illuminate\Http\Request;
 class ProductoController extends Controller
 {
     public function listarProductos(Request $request): JsonResponse
-{
-    try {
-        $buscar = $request->query('buscar');
-        $categorias = $request->query('categorias', []);
+    {
+        try {
+            $buscar = $request->query('buscar');
+            $categorias = $request->query('categorias', []);
 
-        $query = Producto::with(['imagenes', 'usuario:id,nombre', 'categorias']);
+            $query = Producto::with(['imagenes', 'usuario:id,nombre', 'categorias']);
 
-        if (!empty($buscar)) {
-            $query->where(function ($q) use ($buscar) {
-                $q->where('nombre', 'like', '%' . $buscar . '%')
-                  ->orWhere('localidad', 'like', '%' . $buscar . '%')
-                  ->orWhere('descripcion', 'like', '%' . $buscar . '%');
-            });
+            if (!empty($buscar)) {
+                $query->where(function ($q) use ($buscar) {
+                    $q->where('nombre', 'like', '%' . $buscar . '%')
+                    ->orWhere('localidad', 'like', '%' . $buscar . '%')
+                    ->orWhere('descripcion', 'like', '%' . $buscar . '%');
+                });
+            }
+
+            if (!empty($categorias) && is_array($categorias)) {
+                $query->whereHas('categorias', function ($q) use ($categorias) {
+                    $q->whereIn('categorias.id', $categorias);
+                });
+            }
+
+            $productos = $query->paginate(12);
+
+            return response()->json($productos);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        if (!empty($categorias) && is_array($categorias)) {
-            $query->whereHas('categorias', function ($q) use ($categorias) {
-                $q->whereIn('categorias.id', $categorias);
-            });
-        }
-
-        $productos = $query->paginate(12);
-
-        return response()->json($productos);
-    } catch (\Throwable $e) {
-        return response()->json([
-            'error' => $e->getMessage()
-        ], 500);
     }
-}
 
     public function obtenerProducto($id)
     {
@@ -61,4 +61,5 @@ class ProductoController extends Controller
             ], 500);
         }
     }
+    
 }

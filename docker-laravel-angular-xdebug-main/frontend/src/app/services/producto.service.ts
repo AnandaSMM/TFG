@@ -53,4 +53,12 @@ export class ProductoService {
 
     return this.http.get<any>(url);
   }
+
+  obtenerProductoSimple(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}/simple`);
+  }
+  obtenerProducto(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
 }

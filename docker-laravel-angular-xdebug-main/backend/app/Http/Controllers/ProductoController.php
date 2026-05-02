@@ -61,5 +61,32 @@ class ProductoController extends Controller
             ], 500);
         }
     }
+    public function obtenerProductoSinImagenes($id)
+    {
+        $producto = Producto::with([
+                'usuario:id,nombre'
+            ])
+            ->select([
+                'id',
+                'usuario_id',
+                'nombre',
+                'descripcion',
+                'precio_venta',
+                'precio_alquiler_dia',
+                'disponible',
+                'localidad'
+            ])
+            ->find($id);
+
+        if (!$producto) {
+            return response()->json([
+                'message' => 'Producto no encontrado'
+            ], 404);
+        }
+
+        return response()->json([
+            'data' => $producto
+        ]);
+    }
     
 }

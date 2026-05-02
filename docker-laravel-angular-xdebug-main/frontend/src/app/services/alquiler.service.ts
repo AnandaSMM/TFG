@@ -25,6 +25,7 @@ export class AlquilerService {
       }
     );
   }
+
   listarReservados() {
     const token = localStorage.getItem('token');
     return this.http.get(`${this.apiUrl}/reservas`, {
@@ -34,6 +35,7 @@ export class AlquilerService {
       }
     });
   }
+
   listarPrestados() {
     const token = localStorage.getItem('token');
 
@@ -43,5 +45,20 @@ export class AlquilerService {
         Accept: 'application/json'
       }
     });
+  }
+
+  cancelarAlquiler(id: number) {
+    const token = localStorage.getItem('token');
+
+    return this.http.put(
+      `${this.apiUrl}/alquileres/${id}/cancelar`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json'
+        }
+      }
+    );
   }
 }

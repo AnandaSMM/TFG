@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { CategoriaService } from '../../services/categoria.service';
+import { DetallesProductoComponent } from '../detalles/detalles-producto.component';
+import { ProductoService } from '../../services/producto.service';
+
 
 interface ImagenProducto {
   id: number;
@@ -47,13 +50,14 @@ interface RespuestaProductos {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, DetallesProductoComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
   private http = inject(HttpClient);
   private categoriaService = inject(CategoriaService);
+  private productoService = inject(ProductoService);
 
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
@@ -68,6 +72,7 @@ export class HomeComponent implements OnInit {
   categoriasMenuAbierto = false; 
   productoSeleccionado: Producto | null = null;
   modalAbierto = false;
+  
 
   private apiUrl = 'http://localhost:8000/api/productos';
   private baseUrl = 'http://localhost:8000/storage/';
@@ -82,7 +87,6 @@ export class HomeComponent implements OnInit {
   cargarCategorias(): void {
     this.categoriaService.getCategorias().subscribe({
       next: (respuesta: any) => {
-        // Ajuste aquí: Accedemos a respuesta.data
         if (respuesta && Array.isArray(respuesta.data)) {
           this.categorias = respuesta.data;
         } else if (Array.isArray(respuesta)) {
@@ -222,51 +226,26 @@ export class HomeComponent implements OnInit {
     return categoria.id;
   }
 
-  getImagenUrl(ruta: string | null | undefined): string {
-    if (!ruta) {
-      return 'assets/producto-placeholder.jpg';
-    }
-
-    return `${this.baseUrl}${ruta}`;
-  }
-
-  getImagenActual(producto: Producto): string {
-    if (!producto.imagenes || producto.imagenes.length === 0) {
-      return 'assets/producto-placeholder.jpg';
-    }
-
-    const indice = this.imagenActualPorProducto[producto.id] ?? 0;
-    return this.getImagenUrl(producto.imagenes[indice]?.imagen);
-  }
-
-  siguienteImagen(producto: Producto, event?: Event): void {
-    if (event) {
-      event.stopPropagation();
-    }
-
-    if (!producto.imagenes || producto.imagenes.length <= 1) return;
-
-    const actual = this.imagenActualPorProducto[producto.id] ?? 0;
-    this.imagenActualPorProducto[producto.id] =
-      (actual + 1) % producto.imagenes.length;
-  }
-
-  anteriorImagen(producto: Producto, event?: Event): void {
-    if (event) {
-      event.stopPropagation();
-    }
-
-    if (!producto.imagenes || producto.imagenes.length <= 1) return;
-
-    const actual = this.imagenActualPorProducto[producto.id] ?? 0;
-    this.imagenActualPorProducto[producto.id] =
-      (actual - 1 + producto.imagenes.length) % producto.imagenes.length;
-  }
-
-  abrirModal(producto: Producto): void {
+  abrirModal(producto: any): void {
     this.productoSeleccionado = producto;
     this.modalAbierto = true;
     document.body.classList.add('modal-open');
+
+    this.productoService.obtenerProducto(producto.id).subscribe({
+      next: (productoCompleto) => {
+        this.productoSeleccionado = {
+          ...producto,
+          ...productoCompleto,
+          imagenes:
+            productoCompleto.imagenes?.length
+              ? productoCompleto.imagenes
+              : producto.imagenes
+        };
+      },
+      error: (error) => {
+        console.error('Error al cargar el producto completo', error);
+      }
+    });
   }
 
   cerrarModal(): void {

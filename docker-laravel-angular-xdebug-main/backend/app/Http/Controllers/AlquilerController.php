@@ -67,17 +67,28 @@ class AlquilerController extends Controller
                 'message' => 'Usuario no autenticado'
             ], 401);
         }
-        $reservas = Alquiler::with('producto')
+        $reservas = Alquiler::with([
+                'producto:id,nombre'
+            ])
             ->where('usuario_id', $usuario->id)
             ->where('estado', 'activo')
             ->orderBy('fecha_inicio', 'asc')
-            ->get();
+            ->get([
+                'id',
+                'usuario_id',
+                'producto_id',
+                'fecha_inicio',
+                'fecha_fin',
+                'precio_total',
+                'estado'
+            ]);
 
         return response()->json([
             'message' => 'Reservas obtenidas correctamente',
             'reservas' => $reservas
         ]);
     }
+
     public function listarProductosPrestados(Request $request)
     {
         $usuario = $request->user();
@@ -86,23 +97,69 @@ class AlquilerController extends Controller
                 'message' => 'Usuario no autenticado'
             ], 401);
         }
-        $productos = Producto::with(['alquileres' => function ($query) {
-                $query->where('estado', 'activo')
-                    ->orderBy('fecha_inicio', 'asc');
-            }])
-            ->where('usuario_id', $usuario->id)
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(function ($producto) {
-                $producto->esta_alquilado = $producto->alquileres->isNotEmpty();
-                $producto->alquiler_activo = $producto->alquileres->first();
-
-                return $producto;
-            });
+        $prestados = Alquiler::with([
+                'producto:id,usuario_id,nombre'
+            ])
+            ->where('estado', 'activo')
+            ->whereHas('producto', function ($query) use ($usuario) {
+                $query->where('usuario_id', $usuario->id);
+            })
+            ->orderBy('fecha_inicio', 'asc')
+            ->get([
+                'id',
+                'usuario_id',
+                'producto_id',
+                'fecha_inicio',
+                'fecha_fin',
+                'precio_total',
+                'estado'
+            ]);
 
         return response()->json([
             'message' => 'Productos prestados obtenidos correctamente',
-            'prestados' => $productos
+            'prestados' => $prestados
+        ]);
+    }    
+    
+    public function cancelarAlquiler(Request $request, $id)
+    {
+        $usuario = $request->user();
+
+        if (!$usuario) {
+            return response()->json([
+                'message' => 'Usuario no autenticado'
+            ], 401);
+        }
+
+        $alquiler = Alquiler::find($id);
+
+        if (!$alquiler) {
+            return response()->json([
+                'message' => 'Alquiler no encontrado'
+            ], 404);
+        }
+
+        if ($alquiler->estado !== 'activo') {
+            return response()->json([
+                'message' => 'Este alquiler ya no está activo'
+            ], 400);
+        }
+
+        $hoy = Carbon::today();
+        $fechaInicio = Carbon::parse($alquiler->fecha_inicio);
+
+        if ($hoy->greaterThanOrEqualTo($fechaInicio)) {
+            return response()->json([
+                'message' => 'Solo puedes cancelar el alquiler antes de la fecha de inicio'
+            ], 400);
+        }
+
+        $alquiler->estado = 'cancelado';
+        $alquiler->save();
+
+        return response()->json([
+            'message' => 'Alquiler cancelado correctamente',
+            'alquiler' => $alquiler
         ]);
     }
 

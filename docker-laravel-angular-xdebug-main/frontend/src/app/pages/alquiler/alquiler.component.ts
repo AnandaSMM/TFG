@@ -1,13 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { AlquilerService } from '../../services/alquiler.service';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { Location } from '@angular/common';
-
+import { ProductoService } from '../../services/producto.service';
 
 declare var bootstrap: any;
 @Component({
@@ -20,6 +19,7 @@ export class AlquilerComponent implements OnInit {
   private alquilerService = inject(AlquilerService);
   private route = inject(ActivatedRoute);
   private location = inject(Location);
+  private productoService = inject(ProductoService);
 
   productoId!: number;
   fechaInicio = '';
@@ -28,19 +28,12 @@ export class AlquilerComponent implements OnInit {
   precioTotal = 0;
   error = '';
   mensaje = '';
+  cargando = false;
+  precioAlquilerDia = 0;
+  producto: any = null;
+  reservasCalendario: any[] = [];
 
-  precioAlquilerDia = 5; // temporal, luego puedes traerlo del backend
-
-  reservasCalendario: any[] = [
-    {
-      title: 'Reservado',
-      start: '2026-05-10',
-      end: '2026-05-16',
-      color: '#dc3545'
-    }
-  ];
-
-  calendarOptions = {
+  calendarOptions: any = {
     plugins: [dayGridPlugin, interactionPlugin],
     initialView: 'dayGridMonth',
     locale: 'es',
@@ -59,17 +52,14 @@ export class AlquilerComponent implements OnInit {
       month: 'Mes'
     },
 
-    events: this.reservasCalendario,
+    events: [],
 
     selectAllow: (selectInfo: any) => {
       return !this.reservasCalendario.some((reserva: any) => {
         const inicioReserva = new Date(reserva.start + 'T00:00:00');
         const finReserva = new Date(reserva.end + 'T00:00:00');
 
-        return (
-          selectInfo.start < finReserva &&
-          selectInfo.end > inicioReserva
-        );
+        return selectInfo.start < finReserva && selectInfo.end > inicioReserva;
       });
     },
 
@@ -80,12 +70,49 @@ export class AlquilerComponent implements OnInit {
 
   ngOnInit(): void {
     this.productoId = Number(this.route.snapshot.paramMap.get('id'));
-    console.log('ID producto:', this.productoId);
+    this.cargarProducto();
+    this.cargarReservasProducto();
+  }
+
+
+ cargarReservasProducto(): void {
+    this.cargando = true;
+    this.alquilerService.listarReservados().subscribe({
+      next: (res: any) => {
+        const reservas = res.reservas || [];
+
+        this.reservasCalendario = reservas
+          .filter((r: any) => r.producto_id === this.productoId)
+          .map((r: any) => {
+            const fechaFin = new Date(r.fecha_fin + 'T00:00:00');
+            fechaFin.setDate(fechaFin.getDate() + 1);
+
+            return {
+              title: 'Reservado',
+              start: r.fecha_inicio,
+              end: this.formatearFecha(fechaFin),
+              color: '#dc3545'
+            };
+          });
+
+        this.calendarOptions = {
+          ...this.calendarOptions,
+          events: [...this.reservasCalendario]
+        };
+
+        this.cargando = false;
+      },
+      error: () => {
+        this.error = 'Error cargando reservas';
+        this.cargando = false;
+      }
+    });
   }
 
   onDateSelect(info: any): void {
     const calendarApi = info.view.calendar;
 
+  
     calendarApi.getEvents().forEach((event: any) => {
       if (event.extendedProps?.seleccionado) {
         event.remove();
@@ -117,7 +144,6 @@ export class AlquilerComponent implements OnInit {
       this.precioTotal = 0;
       return;
     }
-
     const inicio = new Date(this.fechaInicio + 'T00:00:00');
     const fin = new Date(this.fechaFin + 'T00:00:00');
 
@@ -126,8 +152,8 @@ export class AlquilerComponent implements OnInit {
       return;
     }
 
-    const diferencia = fin.getTime() - inicio.getTime();
-    const dias = diferencia / (1000 * 60 * 60 * 24) + 1;
+    const dias =
+      (fin.getTime() - inicio.getTime()) / (1000 * 60 * 60 * 24) + 1;
 
     this.precioTotal = dias * this.precioAlquilerDia;
   }
@@ -144,58 +170,39 @@ export class AlquilerComponent implements OnInit {
         this.mensaje = 'Producto alquilado correctamente';
         this.error = '';
 
-        this.agregarReservaAlCalendario();
-        this.mostrarToast();
+        this.cargarReservasProducto(); 
       },
       error: (err) => {
-        this.error = err.error?.message || 'Error al alquilar el producto';
+        this.error = err.error?.message || 'Error al alquilar';
         this.mensaje = '';
       }
     });
   }
 
-  
-  agregarReservaAlCalendario(): void {
-    const fechaFinEvento = new Date(this.fechaFin + 'T00:00:00');
-    fechaFinEvento.setDate(fechaFinEvento.getDate() + 1);
-
-    const nuevaReserva = {
-      title: 'Reservado',
-      start: this.fechaInicio,
-      end: this.formatearFecha(fechaFinEvento),
-      color: '#dc3545'
-    };
-
-    this.reservasCalendario.push(nuevaReserva);
-
-    this.calendarOptions = {
-      ...this.calendarOptions,
-      events: [...this.reservasCalendario]
-    };
-
-    this.fechaInicio = '';
-    this.fechaFin = '';
-    this.precioTotal = 0;
-    this.opcionCompra = false;
-  }
-
-  mostrarToast(): void {
-    const toastElement = document.getElementById('toastAlquiler');
-
-    if (toastElement) {
-      const toast = new bootstrap.Toast(toastElement);
-      toast.show();
-    }
-  }
   private formatearFecha(fecha: Date): string {
-    const year = fecha.getFullYear();
-    const month = String(fecha.getMonth() + 1).padStart(2, '0');
-    const day = String(fecha.getDate()).padStart(2, '0');
+    const y = fecha.getFullYear();
+    const m = String(fecha.getMonth() + 1).padStart(2, '0');
+    const d = String(fecha.getDate()).padStart(2, '0');
 
-    return `${year}-${month}-${day}`;
+    return `${y}-${m}-${d}`;
   }
 
   volver(): void {
     this.location.back();
+  }
+
+  cargarProducto(): void {
+    this.cargando = true;
+    this.productoService.obtenerProductoSimple(this.productoId).subscribe({
+      next: (res: any) => {
+        this.producto = res.data || res.producto || res;
+        this.precioAlquilerDia = Number(this.producto.precio_alquiler_dia || 0);
+        this.cargando = false;
+      },
+      error: () => {
+        this.error = 'No se pudo cargar el producto';
+        this.cargando = false;
+      }
+    });
   }
 }

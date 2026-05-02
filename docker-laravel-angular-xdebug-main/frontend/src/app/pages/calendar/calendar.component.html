@@ -48,36 +48,44 @@
             class="card border-0 shadow-sm mb-3"
             *ngFor="let alquiler of alquileres"
           >
-            <div class="card-body">
-              <div class="row align-items-center">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-start gap-3">
 
-                <div class="col-9">
-                  <h5 class="fw-bold text-primary mb-2">
+                <div class="flex-grow-1">
+                  <h5 class="fw-bold text-primary mb-3">
                     {{ alquiler.producto?.nombre }}
                   </h5>
 
-                  <p class="text-muted small mb-1">
-                    Fecha inicio
-                  </p>
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <p class="text-muted small mb-1">Fecha inicio</p>
+                      <p class="fw-semibold mb-0">
+                        {{ alquiler.fecha_inicio | date:'d MMM y' }}
+                      </p>
+                    </div>
 
-                  <p class="fw-semibold mb-2">
-                    {{ alquiler.fecha_inicio | date:'d MMM y' }}
-                  </p>
+                    <div class="col-md-6">
+                      <p class="text-muted small mb-1">Fecha devolución</p>
+                      <p class="fw-bold text-warning mb-0">
+                        {{ alquiler.fecha_fin | date:'d MMM y' }}
+                      </p>
+                    </div>
+                  </div>
 
-                  <p class="text-muted small mb-1">
-                    Fecha devolución
-                  </p>
-
-                  <p class="fw-bold text-warning mb-2">
-                    {{ alquiler.fecha_fin | date:'d MMM y' }}
-                  </p>
-
-                  <p class="fw-bold text-primary mb-0">
+                  <p class="fw-bold text-primary mb-2">
                     Total: {{ alquiler.precio_total }} €
                   </p>
+
+                  <button
+                    *ngIf="modo === 'reservados' && alquiler.estado === 'activo' && puedeCancelar(alquiler.fecha_inicio)"
+                    class="btn btn-danger btn-sm px-3 py-1 fw-semibold"
+                    (click)="abrirModalCancelar(alquiler.id)"
+                  >
+                    Cancelar
+                  </button>
                 </div>
 
-                <div class="col-3 text-end">
+                <div class="text-end">
                   <span
                     class="badge rounded-pill"
                     [ngClass]="alquiler.estado === 'activo'
@@ -105,6 +113,46 @@
         </div>
       </div>
     </div>
+    <!-- Modal cancelar -->
+    <div
+      class="modal fade"
+      id="modalCancelar"
+      tabindex="-1"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-danger fw-bold">
+              Confirmar cancelación
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
 
+          <div class="modal-body">
+            ¿Estás seguro de que quieres cancelar este alquiler?
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-bs-dismiss="modal"
+            >
+              Volver
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              (click)="confirmarCancelacion()"
+            >
+              Sí, cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

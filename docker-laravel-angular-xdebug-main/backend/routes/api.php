@@ -16,6 +16,7 @@ Route::get('/usuarios/{id}', [UserController::class, 'obtenerUsuario']);
 Route::put('/usuarios/{id}', [UserController::class, 'actualizarUsuario']);
 Route::delete('/usuarios/{id}', [UserController::class, 'eliminarUsuario']);
 Route::get('/productos/{id}', [ProductoController::class, 'obtenerProducto']);
+Route::get('/productos/{id}/simple', [ProductoController::class, 'obtenerProductoSinImagenes']);
 
 Route::get('/categorias', [CategoriaController::class, 'listarTodo']);
 Route::post('/categorias', [CategoriaController::class, 'crearCategoria']);
@@ -26,3 +27,4 @@ Route::get('/productos/{id}/categorias', [CategoriaController::class, 'categoria
 Route::middleware('auth:sanctum')->post('/productos/{id}/alquilar', [AlquilerController::class, 'alquilar']);
 Route::middleware('auth:sanctum')->get('/reservas', [AlquilerController::class, 'listarReservados']);
 Route::middleware('auth:sanctum')->get('/prestados',[AlquilerController::class, 'listarProductosPrestados']);
+Route::middleware('auth:sanctum')->put('/alquileres/{id}/cancelar',[AlquilerController::class, 'cancelarAlquiler']);

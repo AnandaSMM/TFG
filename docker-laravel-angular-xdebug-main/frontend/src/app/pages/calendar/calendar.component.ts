@@ -5,12 +5,13 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { AlquilerService } from '../../services/alquiler.service';
+import { RouterModule } from '@angular/router';
 
 declare var bootstrap: any;
 @Component({
   selector: 'app-calendario',
   standalone: true,
-  imports: [FullCalendarModule, CommonModule],
+  imports: [FullCalendarModule, CommonModule, RouterModule],
   templateUrl: './calendar.component.html',
 })
 export class CalendarioComponent implements OnInit {
@@ -146,5 +147,16 @@ export class CalendarioComponent implements OnInit {
     const modalElement = document.getElementById('modalCancelar');
     const modal = bootstrap.Modal.getInstance(modalElement);
     modal.hide();
+  }
+  puedeDevolver(fechaFin: string, estado: string): boolean {
+    if (estado !== 'activo') return false;
+
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    const fin = new Date(fechaFin);
+    fin.setHours(0, 0, 0, 0);
+
+    return hoy >= fin;
   }
 }

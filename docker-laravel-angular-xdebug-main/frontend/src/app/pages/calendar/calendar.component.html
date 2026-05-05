@@ -81,21 +81,16 @@
                     class="btn btn-danger btn-sm px-3 py-1 fw-semibold"
                     (click)="abrirModalCancelar(alquiler.id)"
                   >
-                    Cancelar
+                    Cancelar alquiler
                   </button>
-                </div>
-
-                <div class="text-end">
-                  <span
-                    class="badge rounded-pill"
-                    [ngClass]="alquiler.estado === 'activo'
-                      ? 'bg-success'
-                      : 'bg-secondary'"
+                  <a
+                    *ngIf="modo === 'prestados' && puedeDevolver(alquiler.fecha_fin, alquiler.estado)"
+                    [routerLink]="['/devolucion/', alquiler.id]"
+                    class="btn btn-success btn-sm px-3 py-1 fw-semibold ms-2"
                   >
-                    {{ alquiler.estado }}
-                  </span>
+                    Confirmar devolución
+                  </a>
                 </div>
-
               </div>
             </div>
           </div>

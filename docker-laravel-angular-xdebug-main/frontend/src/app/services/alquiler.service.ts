@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export interface Alquiler {
   id: number;
@@ -61,4 +62,16 @@ export class AlquilerService {
       }
     );
   }
+
+  confirmarDevolucion(id: number, data: any): Observable<any> {
+    const token = localStorage.getItem('token');
+    return this.http.put<any>(`${this.apiUrl}/alquileres/${id}/devolucion`, data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json'
+        }
+      });
+  }
+
 }

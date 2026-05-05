@@ -162,6 +162,30 @@ class AlquilerController extends Controller
             'alquiler' => $alquiler
         ]);
     }
+    public function confirmarDevolucion($id)
+    {
+        $alquiler = Alquiler::find($id);
+
+        if (!$alquiler) {
+            return response()->json([
+                'message' => 'Alquiler no encontrado'
+            ], 404);
+        }
+
+        if ($alquiler->estado !== 'activo') {
+            return response()->json([
+                'message' => 'Este alquiler ya no está activo'
+            ], 400);
+        }
+
+        $alquiler->estado = 'finalizado';
+        $alquiler->save();
+
+        return response()->json([
+            'message' => 'Devolución confirmada correctamente',
+            'alquiler' => $alquiler
+        ]);
+    }
 
 }
    

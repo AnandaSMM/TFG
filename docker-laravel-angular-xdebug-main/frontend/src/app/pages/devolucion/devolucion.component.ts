@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { AlquilerService } from '../../services/alquiler.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-confirmar-devolucion',
@@ -11,20 +13,17 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 })
 export class DevolucionComponent {
   private route = inject(ActivatedRoute);
-
+  private alquilerService = inject(AlquilerService);
+  private router = inject(Router);
   alquilerId!: number;
 
   devuelto = true;
   incidencia = false;
-
   tipoIncidencia = '';
   descripcionIncidencia = '';
-
   valoracionUsuario = 5;
   comentarioValoracion = '';
-
   estadoProducto = 'correcto';
-
   mensaje = '';
   error = '';
 
@@ -51,7 +50,6 @@ export class DevolucionComponent {
 
   confirmarDevolucion(): void {
     const data = {
-      alquiler_id: this.alquilerId,
       devuelto: this.devuelto,
       estado_producto: this.estadoProducto,
       incidencia: this.incidencia,
@@ -61,9 +59,20 @@ export class DevolucionComponent {
       comentario_valoracion: this.comentarioValoracion
     };
 
-    console.log('Datos a enviar al backend:', data);
+    this.alquilerService.confirmarDevolucion(this.alquilerId, data).subscribe({
+      next: (respuesta) => {
+        this.mensaje = respuesta.message || 'Devolución confirmada correctamente';
+        this.error = '';
 
-    this.mensaje = 'Devolución confirmada correctamente';
-    this.error = '';
+        setTimeout(() => {
+          this.router.navigate(['/calendar']);
+        }, 1000);
+      },
+      error: (error) => {
+        this.error = error.error?.message || 'Error al confirmar la devolución';
+        this.mensaje = '';
+      }
+    });
   }
+  
 }

@@ -28,3 +28,4 @@ Route::middleware('auth:sanctum')->post('/productos/{id}/alquilar', [AlquilerCon
 Route::middleware('auth:sanctum')->get('/reservas', [AlquilerController::class, 'listarReservados']);
 Route::middleware('auth:sanctum')->get('/prestados',[AlquilerController::class, 'listarProductosPrestados']);
 Route::middleware('auth:sanctum')->put('/alquileres/{id}/cancelar',[AlquilerController::class, 'cancelarAlquiler']);
+Route::middleware('auth:sanctum')->put('/alquileres/{id}/devolucion', [AlquilerController::class, 'confirmarDevolucion']);

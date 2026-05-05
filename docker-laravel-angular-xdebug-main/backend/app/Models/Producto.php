@@ -37,7 +37,10 @@ class Producto extends Model
             'categoria_id'
         );
     }
-
+    public function alquileres()
+    {
+        return $this->hasMany(Alquiler::class, 'producto_id');
+    }
 
     protected $casts = [
         'vendido' => 'boolean',

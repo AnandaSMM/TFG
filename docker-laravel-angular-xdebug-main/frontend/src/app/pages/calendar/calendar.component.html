@@ -1,0 +1,153 @@
+<div class="container-fluid py-4 bg-light min-vh-100">
+  <div class="d-flex justify-content-center mb-4">
+    <div class="btn-group shadow-sm">
+      <button
+        class="btn px-5 py-3 fw-bold"
+        [ngClass]="modo === 'reservados' ? 'btn-primary active' : 'btn-outline-primary'"
+        (click)="cargarReservas()"
+      >
+        Mis Devoluciones
+      </button>
+
+      <button
+        class="btn px-5 py-3 fw-bold"
+        [ngClass]="modo === 'prestados' ? 'btn-primary active' : 'btn-outline-primary'"
+        (click)="cargarPrestados()"
+      >
+        Productos Prestados
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+
+          <h3 class="fw-bold text-primary mb-4">
+            Fechas de Devolución
+          </h3>
+
+          <full-calendar
+            [options]="calendarOptions">
+          </full-calendar>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white p-4">
+          <h3 class="fw-bold text-primary mb-0">
+            {{ modo === 'reservados' ? 'Mis Productos Alquilados' : 'Mis Productos Prestados' }}
+          </h3>
+        </div>
+        <div class="card-body p-3 overflow-auto" style="max-height: 600px;">
+          <ng-container *ngIf="!cargando">
+          <div
+            class="card border-0 shadow-sm mb-3"
+            *ngFor="let alquiler of alquileres"
+          >
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-start gap-3">
+
+                <div class="flex-grow-1">
+                  <h5 class="fw-bold text-primary mb-3">
+                    {{ alquiler.producto?.nombre }}
+                  </h5>
+
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <p class="text-muted small mb-1">Fecha inicio</p>
+                      <p class="fw-semibold mb-0">
+                        {{ alquiler.fecha_inicio | date:'d MMM y' }}
+                      </p>
+                    </div>
+
+                    <div class="col-md-6">
+                      <p class="text-muted small mb-1">Fecha devolución</p>
+                      <p class="fw-bold text-warning mb-0">
+                        {{ alquiler.fecha_fin | date:'d MMM y' }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <p class="fw-bold text-primary mb-2">
+                    Total: {{ alquiler.precio_total }} €
+                  </p>
+
+                  <button
+                    *ngIf="modo === 'reservados' && alquiler.estado === 'activo' && puedeCancelar(alquiler.fecha_inicio)"
+                    class="btn btn-danger btn-sm px-3 py-1 fw-semibold"
+                    (click)="abrirModalCancelar(alquiler.id)"
+                  >
+                    Cancelar alquiler
+                  </button>
+                  <a
+                    *ngIf="modo === 'prestados' && puedeDevolver(alquiler.fecha_fin, alquiler.estado)"
+                    [routerLink]="['/devolucion/', alquiler.id]"
+                    class="btn btn-success btn-sm px-3 py-1 fw-semibold ms-2"
+                  >
+                    Confirmar devolución
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          </ng-container>
+          <div *ngIf="cargando" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2 text-muted">Cargando...</p>
+          </div>
+
+          <div *ngIf="!cargando && alquileres.length === 0" class="text-center text-muted py-5">
+            {{ modo === 'reservados'
+              ? 'No tienes productos alquilados.'
+              : 'No tienes productos prestados.' }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal cancelar -->
+    <div
+      class="modal fade"
+      id="modalCancelar"
+      tabindex="-1"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-danger fw-bold">
+              Confirmar cancelación
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="modal-body">
+            ¿Estás seguro de que quieres cancelar este alquiler?
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-bs-dismiss="modal"
+            >
+              Volver
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              (click)="confirmarCancelacion()"
+            >
+              Sí, cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

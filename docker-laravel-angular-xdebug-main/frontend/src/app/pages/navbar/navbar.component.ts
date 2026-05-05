@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,9 +13,9 @@ import { filter } from 'rxjs/operators';
 })
 export class NavbarComponent {
   private router = inject(Router);
-
+  private authService = inject(AuthService);
   ocultarBotones = false;
-
+  user =JSON.parse(localStorage.getItem('user') || '{}');
   constructor() {
     this.actualizarVisibilidad(this.router.url);
 
@@ -29,5 +30,20 @@ export class NavbarComponent {
 
   private actualizarVisibilidad(url: string): void {
     this.ocultarBotones = url === '/login' || url === '/register';
+  }
+  
+  logout(): void {
+    this.authService.logout().subscribe({
+      next: () => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }

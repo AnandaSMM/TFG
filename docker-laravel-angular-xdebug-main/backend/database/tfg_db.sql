@@ -24,6 +24,17 @@ CREATE TABLE IF NOT EXISTS productos (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
+CREATE INDEX idx_imagenes_producto_id
+ON imagenes_producto (producto_id);
+
+CREATE INDEX idx_producto_categoria_producto_id
+ON producto_categoria (producto_id);
+
+CREATE INDEX idx_producto_categoria_categoria_id
+ON producto_categoria (categoria_id);
+
+CREATE INDEX idx_productos_usuario_id
+ON productos (usuario_id);
 
 CREATE TABLE IF NOT EXISTS imagenes_producto (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -57,6 +68,11 @@ CREATE TABLE IF NOT EXISTS alquileres (
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE SET NULL,
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE SET NULL
 );
+CREATE INDEX idx_alquileres_usuario_estado_fecha
+ON alquileres (usuario_id, estado, fecha_inicio);
+
+CREATE INDEX idx_alquileres_producto_estado_fechas
+ON alquileres (producto_id, estado, fecha_inicio, fecha_fin);
 
 CREATE TABLE IF NOT EXISTS instalaciones (
     id INT AUTO_INCREMENT PRIMARY KEY,

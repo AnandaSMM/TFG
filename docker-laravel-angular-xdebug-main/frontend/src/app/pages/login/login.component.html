@@ -5,7 +5,12 @@
       <h2 class="fw-bold text-primary">Bienvenido</h2>
       <p class="text-muted mb-0">Inicia sesión para continuar</p>
     </div>
-
+    <div class="mb-3">
+      <button (click)="loginWithGoogle()" class="btn btn-outline-info">
+        <img src="https://developers.google.com/identity/images/g-logo.png" width="20" style="margin-right:8px;">
+        Iniciar sesión con Google
+      </button>
+    </div>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
       <div class="mb-3">

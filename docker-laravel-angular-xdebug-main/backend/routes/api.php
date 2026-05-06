@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\AlquilerController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -29,3 +30,7 @@ Route::middleware('auth:sanctum')->get('/reservas', [AlquilerController::class, 
 Route::middleware('auth:sanctum')->get('/prestados',[AlquilerController::class, 'listarProductosPrestados']);
 Route::middleware('auth:sanctum')->put('/alquileres/{id}/cancelar',[AlquilerController::class, 'cancelarAlquiler']);
 Route::middleware('auth:sanctum')->put('/alquileres/{id}/devolucion', [AlquilerController::class, 'confirmarDevolucion']);
+
+//google login
+Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect']);
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback']);

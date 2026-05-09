@@ -1,30 +1,39 @@
 <nav class="navbar-custom">
-  <div class="container-fluid d-flex justify-content-between align-items-center">
-    <div class="logo">
-      Rent2play
+  <div class="navbar-content">
+    <div class="nav-logo">
+      <h2>Rent2play</h2>
     </div>
-    <small>Bienvenido {{user.nombre}}</small>
-    <ul class="menu d-flex align-items-center mb-0" *ngIf="!ocultarBotones">
-      <li><a routerLink="/home">Inicio</a></li>
-      <li><a routerLink="/home">Instalaciones</a></li>
-      <li><a routerLink="/calendar">Calendario</a></li>
-      <li><a routerLink="/home">Mis productos</a></li>
-      <li><a routerLink="/profile">Mi cuenta</a></li>
-      <li><a routerLink="/home">Ayuda</a></li>
+    <button
+      class="menu-toggle"
+      type="button"
+      (click)="menuAbierto = !menuAbierto"
+      *ngIf="!ocultarBotones"
+      aria-label="Abrir menú"
+    >
+      ☰
+    </button>
+
+    <ul
+      class="menu"
+      [class.menu-open]="menuAbierto"
+      *ngIf="!ocultarBotones"
+    >
+      <li><a routerLink="/home" (click)="menuAbierto = false">Inicio</a></li>
+      <li><a routerLink="/home" (click)="menuAbierto = false">Instalaciones</a></li>
+      <li><a routerLink="/calendar" (click)="menuAbierto = false">Calendario</a></li>
+      <li><a routerLink="/home" (click)="menuAbierto = false">Mis productos</a></li>
+      <li><a routerLink="/profile" (click)="menuAbierto = false">Mi cuenta</a></li>
+
       <li class="icono">
-        <span class="mensaje-icono">💬</span>
+        <span class="mensaje-icono"><img src="/mensajes.svg"></span>
         <span class="badge">3</span>
       </li>
+
       <li>
-        <button class="btn btn-link p-0" (click)="logout()">
-          <img
-            src="Logout.png"
-            alt="Cerrar sesión"
-            style="height: 20px;"
-          />       
+        <button class="logout-button" (click)="logout()">
+          <img src="logoutt.svg" alt="Cerrar sesión" />
         </button>
       </li>
     </ul>
-
   </div>
 </nav>

@@ -52,7 +52,7 @@ interface RespuestaProductos {
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, DetallesProductoComponent],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
   private http = inject(HttpClient);
@@ -72,10 +72,7 @@ export class HomeComponent implements OnInit {
   categoriasMenuAbierto = false; 
   productoSeleccionado: Producto | null = null;
   modalAbierto = false;
-  
-
   private apiUrl = 'http://localhost:8000/api/productos';
-  private baseUrl = 'http://localhost:8000/storage/';
 
   imagenActualPorProducto: { [productoId: number]: number } = {};
 

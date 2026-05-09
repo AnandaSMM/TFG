@@ -1,193 +1,215 @@
-<!--Barra de busqueda-->
-<div class="container mt-4">
-  <div class="row justify-content-center mb-4 align-items-start">
-    <div class="col-md-5">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Buscar productos..."
-        [(ngModel)]="busqueda"
-        (input)="filtrarProductos()"
-      />
+<!-- Barra de búsqueda -->
+<div class="home-container">
+  <section class="hero-section">
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <h1 class="hero-title">
+      Alquila equipamiento <br />
+      deportivo <span>cerca de ti</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Encuentra lo que necesitas, cuando lo necesitas.
+    </p>
+
+    <div class="hero-buttons">
+      <button class="hero-btn hero-btn-secondary">
+        Publicar producto
+      </button>
     </div>
 
-    <div class="col-md-3">
-      <div class="dropdown w-100">
-        <button
-          class="btn btn-outline-secondary dropdown-toggle w-100 text-start"
-          type="button"
-          (click)="toggleMenuCategorias()"
-        >
-          Categorías
-          <span *ngIf="categoriasSeleccionadas.length > 0">
-            ({{ categoriasSeleccionadas.length }})
-          </span>
-        </button>
+    <div class="hero-features">
+      <div class="hero-feature">
+        <div class="feature-icon"><img src="/shield.png"></div>
+        <div>
+          <strong>Usuarios verificados</strong>
+          <p>Compra y alquila con confianza</p>
+        </div>
+      </div>
+      <div class="hero-feature">
+        <div class="feature-icon"><img src="/star.png"></div>
+        <div>
+          <strong>Calidad garantizada</strong>
+          <p>Equipos revisados y confiables</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+  <div class="search-section">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Buscar productos..."
+      [(ngModel)]="busqueda"
+      (input)="filtrarProductos()"
+    />
+
+    <div class="category-dropdown">
+      <button
+        class="category-button"
+        type="button"
+        (click)="toggleMenuCategorias()"
+      >
+        Categorías
+        <span *ngIf="categoriasSeleccionadas.length > 0">
+          ({{ categoriasSeleccionadas.length }})
+        </span>
+      </button>
+
+      <div
+        class="category-menu"
+        *ngIf="categoriasMenuAbierto"
+      >
+        <div *ngIf="categorias.length === 0" class="empty-categories">
+          No hay categorías disponibles
+        </div>
 
         <div
-          class="dropdown-menu w-100 p-3 shadow"
-          [class.show]="categoriasMenuAbierto"
-          style="display: block;"
-          *ngIf="categoriasMenuAbierto"
+          class="category-check"
+          *ngFor="let categoria of categorias; trackBy: trackByCategoriaId"
         >
-          <div *ngIf="categorias.length === 0" class="text-muted small">
-            No hay categorías disponibles
-          </div>
+          <input
+            type="checkbox"
+            [id]="'categoria-' + categoria.id"
+            [checked]="estaCategoriaSeleccionada(categoria.id)"
+            (change)="toggleCategoria(categoria.id, $event)"
+          />
 
-          <div
-            class="form-check mb-2"
-            *ngFor="let categoria of categorias; trackBy: trackByCategoriaId"
+          <label [for]="'categoria-' + categoria.id">
+            {{ categoria.nombre }}
+          </label>
+        </div>
+
+        <div class="category-actions">
+          <button
+            type="button"
+            class="clear-button"
+            (click)="limpiarCategorias()"
           >
-            <input
-              class="form-check-input"
-              type="checkbox"
-              [id]="'categoria-' + categoria.id"
-              [checked]="estaCategoriaSeleccionada(categoria.id)"
-              (change)="toggleCategoria(categoria.id, $event)"
-            />
+            Limpiar
+          </button>
 
-            <label class="form-check-label" [for]="'categoria-' + categoria.id">
-              {{ categoria.nombre }}
-            </label>
-          </div>
-
-          <div class="d-flex justify-content-between mt-3 border-top pt-2">
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-danger"
-              (click)="limpiarCategorias()"
-            >
-              Limpiar
-            </button>
-
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-primary"
-              (click)="aplicarFiltros()"
-            >
-              Aplicar
-            </button>
-          </div>
+          <button
+            type="button"
+            class="apply-button"
+            (click)="aplicarFiltros()"
+          >
+            Aplicar
+          </button>
         </div>
       </div>
     </div>
   </div>
 
   <div
-    class="d-flex flex-wrap gap-2 mb-3 justify-content-center"
+    class="selected-categories"
     *ngIf="categoriasSeleccionadas.length > 0"
   >
     <span
-      class="badge rounded-pill text-bg-secondary"
+      class="category-chip"
       *ngFor="let categoria of getCategoriasSeleccionadasDetalle(); trackBy: trackByCategoriaId"
     >
       {{ categoria.nombre }}
 
       <button
         type="button"
-        class="btn-close btn-close-white ms-2"
-        style="font-size: 0.6rem;"
+        class="chip-remove"
         aria-label="Quitar categoría"
         (click)="quitarCategoria(categoria.id)"
-      ></button>
+      >
+        ×
+      </button>
     </span>
   </div>
 
-  <br />
-  <br />
-
-  <div *ngIf="cargando" class="text-center">
+  <div *ngIf="cargando" class="state-message">
     <p>Cargando productos...</p>
   </div>
 
-  <div *ngIf="error" class="alert alert-danger text-center">
+  <div *ngIf="error" class="state-message error-message">
     {{ error }}
   </div>
 
   <div
     *ngIf="!cargando && !error && productosFiltrados.length === 0"
-    class="alert alert-warning text-center"
+    class="state-message warning-message"
   >
     No se encontraron productos
   </div>
 
   <div
-    class="row g-4"
+    class="products-grid"
     *ngIf="!cargando && !error && productosFiltrados.length > 0"
   >
     <div
-      class="col-md-3"
+      class="product-card"
       *ngFor="let producto of productosFiltrados; trackBy: trackByProductoId"
+      role="button"
+      tabindex="0"
+      (click)="abrirModal(producto)"
     >
-      <div
-        class="card h-100 shadow-sm cursor-pointer"
-        role="button"
-        (click)="abrirModal(producto)"
-        style="cursor: pointer;"
-      >
+      <div class="product-image-wrapper">
         <img
           [src]="
-            producto.imagenes?.length
+            producto.imagenes.length
               ? 'http://localhost:8000/storage/' + producto.imagenes[0].imagen
               : 'producto-placeholder.jpg'
           "
-          class="card-img-top"
+          class="product-image"
           alt="Imagen del producto"
-          style="height: 200px; object-fit: cover;"
         />
+      </div>
 
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title">{{ producto.nombre }}</h5>
+      <div class="product-content">
+        <h3 class="product-title">
+          {{ producto.nombre }}
+        </h3>
 
-          <p class="card-text text-muted mb-1">
-            {{ producto.localidad || 'Sin localidad' }}
-          </p>
+        <p class="product-location">
+          <img src="/pin1.svg">{{ producto.localidad || 'Sin localidad' }}
+        </p>
 
-          <p class="fw-bold mb-2">
-            {{ producto.precio_alquiler_dia || 'No indicado' }} €/día
-          </p>
+        <p class="product-price">
+          {{ producto.precio_alquiler_dia || 'No indicado' }} €/día
+        </p>
 
-          <span
-            [ngStyle]="{ color: producto.disponible ? '#3F8B32' : '#8B323F' }"
-          >
-            {{ producto.disponible ? 'Disponible' : 'No disponible' }}
-          </span>
-        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Paginación -->
-<div
-  class="d-flex justify-content-center mt-4"
-  *ngIf="!cargando && !error && totalPaginas > 1"
->
-  <nav aria-label="Paginación de productos">
-    <ul class="pagination">
-      <li class="page-item" [class.disabled]="paginaActual === 1">
-        <button class="page-link" (click)="cambiarPagina(paginaActual - 1)">
-          Anterior
-        </button>
-      </li>
+  <!-- Paginación -->
+  <div
+    class="pagination-wrapper"
+    *ngIf="!cargando && !error && totalPaginas > 1"
+  >
+    <nav aria-label="Paginación de productos">
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="paginaActual === 1">
+          <button class="page-link" (click)="cambiarPagina(paginaActual - 1)">
+            Anterior
+          </button>
+        </li>
 
-      <li
-        class="page-item"
-        *ngFor="let pagina of paginasVisibles()"
-        [class.active]="pagina === paginaActual"
-      >
-        <button class="page-link" (click)="cambiarPagina(pagina)">
-          {{ pagina }}
-        </button>
-      </li>
+        <li
+          class="page-item"
+          *ngFor="let pagina of paginasVisibles()"
+          [class.active]="pagina === paginaActual"
+        >
+          <button class="page-link" (click)="cambiarPagina(pagina)">
+            {{ pagina }}
+          </button>
+        </li>
 
-      <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
-        <button class="page-link" (click)="cambiarPagina(paginaActual + 1)">
-          Siguiente
-        </button>
-      </li>
-    </ul>
-  </nav>
+        <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+          <button class="page-link" (click)="cambiarPagina(paginaActual + 1)">
+            Siguiente
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
 </div>
 
 <detalles-producto

@@ -12,7 +12,7 @@ class ProductoSeeder extends Seeder
         DB::table('productos')->insert([
             [
                 'usuario_id' => 1,
-                'nombre' => 'Balón de Fútbol Adidas',
+                'nombre' => 'Balón de Fútbol',
                 'descripcion' => 'Balón oficial en buen estado para entrenamientos y partidos.',
                 'precio_venta' => 22.00,
                 'precio_alquiler_dia' => 4.00,
@@ -22,8 +22,8 @@ class ProductoSeeder extends Seeder
             ],
             [
                 'usuario_id' => 1,
-                'nombre' => 'Espinilleras Nike',
-                'descripcion' => 'Espinilleras ligeras y resistentes.',
+                'nombre' => 'Palos de Golf',
+                'descripcion' => 'Equipo entero de palos de golf en perfecto estado.',
                 'precio_venta' => 15.00,
                 'precio_alquiler_dia' => 2.50,
                 'vendido' => false,
@@ -32,7 +32,7 @@ class ProductoSeeder extends Seeder
             ],
             [
                 'usuario_id' => 1,
-                'nombre' => 'Balón de Baloncesto Spalding',
+                'nombre' => 'Balón de Baloncesto',
                 'descripcion' => 'Balón indoor/outdoor con buen agarre.',
                 'precio_venta' => 25.00,
                 'precio_alquiler_dia' => 5.00,
@@ -42,7 +42,7 @@ class ProductoSeeder extends Seeder
             ],
             [
                 'usuario_id' => 2,
-                'nombre' => 'Raqueta de Tenis Wilson',
+                'nombre' => 'Raqueta de Tenis',
                 'descripcion' => 'Raqueta ligera ideal para jugadores intermedios.',
                 'precio_venta' => 70.00,
                 'precio_alquiler_dia' => 8.00,
@@ -52,8 +52,8 @@ class ProductoSeeder extends Seeder
             ],
             [
                 'usuario_id' => 2,
-                'nombre' => 'Pack de pelotas de tenis',
-                'descripcion' => 'Bote con pelotas seminuevas.',
+                'nombre' => 'Botas de fútbol',
+                'descripcion' => 'Botas de fútbol para césped artificia.',
                 'precio_venta' => 8.00,
                 'precio_alquiler_dia' => 1.50,
                 'vendido' => false,
@@ -72,8 +72,8 @@ class ProductoSeeder extends Seeder
             ],
             [
                 'usuario_id' => 3,
-                'nombre' => 'Palos de Golf junior',
-                'descripcion' => 'Set de palos de golf para principiantes.',
+                'nombre' => 'Guantes de boxeo Supreme',
+                'descripcion' => 'Guantes de boxeo Supreme en perfecto estado para sparring.',
                 'precio_venta' => 120.00,
                 'precio_alquiler_dia' => 20.00,
                 'vendido' => false,
@@ -102,8 +102,8 @@ class ProductoSeeder extends Seeder
             ],
             [
                 'usuario_id' => 4,
-                'nombre' => 'Balón de Rugby Gilbert',
-                'descripcion' => 'Balón de rugby para entrenamientos.',
+                'nombre' => '   Equipamiento para Yoga',
+                'descripcion' => 'Equipamiento para clases de Yoga, esterilla, cintas, tacos.',
                 'precio_venta' => 28.00,
                 'precio_alquiler_dia' => 6.00,
                 'vendido' => false,

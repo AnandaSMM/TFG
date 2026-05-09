@@ -15,6 +15,7 @@ export class NavbarComponent {
   private router = inject(Router);
   private authService = inject(AuthService);
   ocultarBotones = false;
+  menuAbierto = false;
   user =JSON.parse(localStorage.getItem('user') || '{}');
   constructor() {
     this.actualizarVisibilidad(this.router.url);

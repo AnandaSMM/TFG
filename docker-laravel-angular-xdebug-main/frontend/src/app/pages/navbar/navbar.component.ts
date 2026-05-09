@@ -14,8 +14,12 @@ import { AuthService } from '../../services/auth.service';
 export class NavbarComponent {
   private router = inject(Router);
   private authService = inject(AuthService);
+  
   ocultarBotones = false;
   menuAbierto = false;
+  menuMensajesAbierto = false;
+  menuPerfilAbierto = false;
+
   user =JSON.parse(localStorage.getItem('user') || '{}');
   constructor() {
     this.actualizarVisibilidad(this.router.url);
@@ -28,6 +32,20 @@ export class NavbarComponent {
         this.actualizarVisibilidad(event.urlAfterRedirects);
       });
   }
+
+    toggleMensajes() {
+      this.menuMensajesAbierto =
+        !this.menuMensajesAbierto;
+
+      this.menuPerfilAbierto = false;
+    }
+
+    togglePerfil() {
+      this.menuPerfilAbierto =
+        !this.menuPerfilAbierto;
+
+      this.menuMensajesAbierto = false;
+    }
 
   private actualizarVisibilidad(url: string): void {
     this.ocultarBotones = url === '/login' || url === '/register';
@@ -47,4 +65,6 @@ export class NavbarComponent {
       }
     });
   }
+  
+
 }

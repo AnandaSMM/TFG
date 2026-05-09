@@ -1,65 +1,43 @@
-<div class="container min-vh-100 d-flex justify-content-center align-items-center bg-light">
-  <div class="card shadow border-0 p-4" style="width: 100%; max-width: 420px; border-radius: 20px;">
-    
-    <div class="text-center mb-4">
-      <h2 class="fw-bold text-primary">Bienvenido</h2>
-      <p class="text-muted mb-0">Inicia sesión para continuar</p>
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-header">
+      <h2>Bienvenido</h2>
+      <p>Inicia sesión para continuar</p>
     </div>
-    <div class="mb-3">
-      <button (click)="loginWithGoogle()" class="btn btn-outline-info">
-        <img src="https://developers.google.com/identity/images/g-logo.png" width="20" style="margin-right:8px;">
-        Iniciar sesión con Google
-      </button>
+
+    <button (click)="loginWithGoogle()" class="google-button">
+      <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+      Continuar con Google
+    </button>
+
+    <div class="divider">
+      <span>o entra con tu correo</span>
     </div>
+
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Correo electrónico</label>
-        <input 
-          type="email" 
-          class="form-control form-control-lg"
-          formControlName="email"
-          placeholder="ejemplo@correo.com"
-        >
-        <small
-          class="text-danger"
-          *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-          Introduce un email válido
-        </small>
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <input type="email" formControlName="email" placeholder="ejemplo@correo.com">
       </div>
 
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Contraseña</label>
-        <input 
-          type="password" 
-          class="form-control form-control-lg"
-          formControlName="password"
-          placeholder="********"
-        >
-        <small
-          class="text-danger"
-          *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-          La contraseña es obligatoria
-        </small>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" formControlName="password" placeholder="********">
       </div>
 
-      <div *ngIf="errorMessage" class="alert alert-danger py-2">
+      <div *ngIf="errorMessage" class="login-error">
         {{ errorMessage }}
       </div>
 
-      <button 
-        type="submit" 
-        class="btn btn-primary btn-lg w-100 rounded-pill"
-        [disabled]="loading"
-      >
+      <button type="submit" class="login-button" [disabled]="loading">
         <span *ngIf="!loading">Entrar</span>
         <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
       </button>
     </form>
 
-    <p class="text-center mt-4 mb-0 text-muted">
+    <p class="register-text">
       ¿No tienes cuenta?
-      <a routerLink="/register" class="text-decoration-none fw-semibold">Regístrate</a>
+      <a routerLink="/register">Regístrate</a>
     </p>
   </div>
 </div>

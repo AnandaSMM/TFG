@@ -153,14 +153,13 @@ composer install
 Este comando instala todas las dependencias necesarias del proyecto Laravel.
 
 ---
-
-### Ejecución del backend
-
-No es necesario ejecutar:
+### Cragar migraciones y seeders
 
 ```bash
-php artisan serve
+php artisan migrate:fresh --seed
 ```
+
+### Ejecución del backend
 
 El servidor Nginx ya está configurado para servir la aplicación desde la carpeta `public` de Laravel.
 

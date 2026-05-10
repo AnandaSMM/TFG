@@ -104,7 +104,6 @@ export class ProfileComponent implements OnInit {
         this.alquileresActivos = res.alquileresAct || 0;
       },
       error: (err) => {
-        
         console.error('Error al obtener estadísticas', err)
         this.alquileresTotales = 0;
         this.alquileresActivos = 0;

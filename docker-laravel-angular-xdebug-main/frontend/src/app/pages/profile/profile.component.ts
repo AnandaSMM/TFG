@@ -18,8 +18,17 @@ export class ProfileComponent implements OnInit {
     id: 0,
     nombre: '',
     email: '',
-    telefono: ''
+    telefono: '',
+    foto: '',
+    password: ''
   };
+
+  editando=false;
+
+  activarEdicion(){
+    this.editando=!this.editando;
+    
+  }
 
   ngOnInit() {
     // Intentamos sacar los datos del usuario logueado del localStorage
@@ -30,14 +39,23 @@ export class ProfileComponent implements OnInit {
       this.userData.nombre = user.nombre;
       this.userData.email = user.email;
       this.userData.telefono = user.telefono || '';
+      this.userData.foto = user.foto || '';
+      this.userData.password= '';
     }
   }
 
+
   saveProfile() {
     this.userService.actualizarUsuario(this.userData.id, this.userData).subscribe({
-      next: (res) => alert('¡Datos actualizados en la Base de Datos!'),
+      next: (res) => {
+        alert('¡Datos actualizados en la Base de Datos!');
+        this.userData.password = ''; 
+        this.editando = false;
+        localStorage.setItem('user', JSON.stringify(res.user)); 
+      },
       error: (err) => alert('Error al guardar cambios')
     });
+    
   }
 
   goBack() {

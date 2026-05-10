@@ -65,4 +65,5 @@ class UserController extends Controller
             'message' => 'Usuario eliminado correctamente'
         ]);
     }
+
 }

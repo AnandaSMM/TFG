@@ -342,9 +342,16 @@
             class="avatar"
           />
 
-          <button class="camera-btn" >
+          <button class="camera-btn" (click)="fotoInput.click()">
             📷
           </button>
+          <input
+            #fotoInput
+            type="file"
+            style="display: none"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+          />
         </div>
 
         <h2>{{ userData.nombre }}</h2>
@@ -422,15 +429,15 @@
     <div>
 
       <!-- STATS -->
-      <div class="stats-grid">
+      <div class="stats-grid" >
 
         <div class="stat-card blue">
-          <span class="number">47</span>
+          <span class="number">{{ alquileresTotales }}</span>
           <span class="label">Alquileres Totales</span>
         </div>
 
         <div class="stat-card orange">
-          <span class="number">3</span>
+          <span class="number">{{ alquileresActivos }}</span>
           <span class="label">Alquileres Activos</span>
         </div>
 

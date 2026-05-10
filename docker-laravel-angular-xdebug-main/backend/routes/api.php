@@ -15,7 +15,9 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/productos', [ProductoController::class, 'listarProductos']);
 Route::get('/usuarios/{id}', [UserController::class, 'obtenerUsuario']);
 Route::put('/usuarios/{id}', [UserController::class, 'actualizarUsuario']);
+Route::get('/usuarios/{id}/stats', [UserController::class, 'infoUsuario']);
 Route::delete('/usuarios/{id}', [UserController::class, 'eliminarUsuario']);
+Route::post('/usuarios/foto/{id}', [UserController::class, 'actualizarFoto']);
 Route::get('/productos/{id}', [ProductoController::class, 'obtenerProducto']);
 Route::get('/productos/{id}/simple', [ProductoController::class, 'obtenerProductoSinImagenes']);
 

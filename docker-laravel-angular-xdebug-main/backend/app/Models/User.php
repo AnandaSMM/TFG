@@ -33,4 +33,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function alquileresRecibidos()
+    {
+        return $this->hasManyThrough(Alquiler::class, Producto::class, 'usuario_id', 'producto_id');
+    }
 }

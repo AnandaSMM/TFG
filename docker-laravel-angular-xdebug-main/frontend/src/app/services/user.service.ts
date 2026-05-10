@@ -17,7 +17,15 @@ export class UserService {
     return this.http.put(`${this.apiUrl}/usuarios/${id}`, data);
   }
 
+  actualizarFoto(id: number, formData: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/usuarios/foto/${id}`, formData);
+  }
+
   eliminarUsuario(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/usuarios/${id}`);
+  }
+  
+  obtenerStats(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/usuarios/${id}/stats`);
   }
 }

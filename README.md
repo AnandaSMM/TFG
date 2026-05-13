@@ -70,9 +70,61 @@ está vinculado directamente al contenedor backend. Cualquier modificación real
 
 ## Primera instalación
 
-### 1. Configuración inicial
+### Configuración del entorno
+    1. Abre Microsoft Store desde Windows, busca: Ubuntu 22.04 LTS  Pulsa Instalar y espera a que termine la descarga.
+    2. Abrir Ubuntu desde el menú Inicio (MUY IMPORTANTE: no abras Ubuntu desde PowerShell)
+    3. Crear usuario Linux, la primera vez aparecerá: " Please create a default UNIX user account: "
+        Introduce:
+        - usuario Linux (ejemplo: pepe)
+        - contraseña Linux
+    4. Verificar que Ubuntu funciona, dentro de Ubuntu ejecuta:
+```bash
+whoami
+pwd
+```
+        Debe mostrar algo parecido a:
+        pepe
+        /home/pepe
+    5. Verificar la carpeta home, ejecuta:
+```bash
+ls /home
+```
+        Debe aparecer:
+        pepe
+    6. Crear carpeta de proyectos, dentro de Ubuntu:
+```bash
+mkdir -p ~/projects
+cd ~/projects
+```
+    7. Clonar el proyecto, ejecuta:
+```bash
+git clone URL_DEL_REPO
+```
+    8. Descarga e instala Docker Desktop para Windows. Abre Docker Desktop y espera a que termine de iniciar.
+    9. Activar integración WSL, en Docker Desktop ve a:
+        Settings → Resources → WSL Integration
+        Activa:
+        - Enable integration with my default WSL distro
+        - Ubuntu
+        Luego pulsa:
+        Apply & Restart
+    10. Verificar Docker desde Ubuntu, dentro de Ubuntu ejecuta:
+```bash
+    docker ps
+```
+    11. Ejecutar el proyecto desde Linux, siempre trabaja desde:
+        ~/projects/tu-proyecto
+        NO uses:
+        /mnt/c/Users/...
+    12. Abrir el proyecto en VS Code, instalar la extensión WSL en VS Code y luego dentro de la cmd de ubuntu, en la caarpeta del projects ejecuta:
+```bash
+code .
+```
+---
 
-Copiar el archivo de entorno:
+### 1. Configuración inicial del proyecto
+
+Copiar el archivo de entorno dentro de la carpeta principal del proyecto:
 
 ```bash
 cp .env.example .env
@@ -156,6 +208,7 @@ Este comando instala todas las dependencias necesarias del proyecto Laravel.
 ### Cragar migraciones y seeders
 
 ```bash
+php artisan storage:link
 php artisan migrate:fresh --seed
 ```
 
@@ -183,16 +236,3 @@ Una vez iniciado el entorno, los servicios estarán disponibles en:
 * Frontend (Angular): http://localhost:4200
 * phpMyAdmin: http://localhost:7000
 
----
-
-## Resumen
-
-Este entorno proporciona:
-
-* Backend Laravel completamente funcional
-* Frontend Angular configurado
-* Base de datos MySQL integrada
-* Interfaz de gestión con phpMyAdmin
-* Servidor web Nginx configurado
-
-Todo ello orquestado mediante Docker, permitiendo un entorno reproducible y listo para el desarrollo con un mínimo de configuración.

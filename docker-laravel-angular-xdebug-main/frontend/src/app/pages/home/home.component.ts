@@ -1,12 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { CategoriaService } from '../../services/categoria.service';
 import { DetallesProductoComponent } from '../detalles/detalles-producto.component';
 import { ProductoService } from '../../services/producto.service';
-
 
 interface ImagenProducto {
   id: number;
@@ -113,7 +112,13 @@ export class HomeComponent implements OnInit {
     url += `&categorias[]=${id}`;
   });
 
-  this.http.get<RespuestaProductos>(url).subscribe({
+  const token = localStorage.getItem('token');
+
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  this.http.get<RespuestaProductos>(url, { headers }).subscribe({
     next: (respuesta) => {
 
       this.productos = respuesta.data || []; 

@@ -44,7 +44,7 @@ export class ProductoService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8000/api/productos';
 
- getProductos(page: number = 1, buscar: string = '', categorias: number[] = []) {
+  getProductos(page: number = 1, buscar: string = '', categorias: number[] = []) {
     let url = `${this.apiUrl}?page=${page}&buscar=${encodeURIComponent(buscar)}`;
 
     categorias.forEach((id) => {
@@ -53,6 +53,7 @@ export class ProductoService {
 
     return this.http.get<any>(url);
   }
+  
 
   obtenerProductoSimple(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}/simple`);

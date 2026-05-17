@@ -15,7 +15,12 @@ class ProductoController extends Controller
             $buscar = $request->query('buscar');
             $categorias = $request->query('categorias', []);
 
+            $usuarioId = $request->user()?->id;
             $query = Producto::with(['imagenes', 'usuario:id,nombre', 'categorias']);
+
+            if ($usuarioId) {
+                $query->where('usuario_id', '!=', $usuarioId);
+            }
 
             if (!empty($buscar)) {
                 $query->where(function ($q) use ($buscar) {
@@ -34,6 +39,7 @@ class ProductoController extends Controller
             $productos = $query->paginate(12);
 
             return response()->json($productos);
+
         } catch (\Throwable $e) {
             return response()->json([
                 'error' => $e->getMessage()

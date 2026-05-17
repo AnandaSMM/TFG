@@ -12,7 +12,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
-Route::get('/productos', [ProductoController::class, 'listarProductos']);
+Route::middleware('auth:sanctum')->get('/productos', [ProductoController::class, 'listarProductos']);
 Route::get('/usuarios/{id}', [UserController::class, 'obtenerUsuario']);
 Route::put('/usuarios/{id}', [UserController::class, 'actualizarUsuario']);
 Route::get('/usuarios/{id}/stats', [UserController::class, 'infoUsuario']);

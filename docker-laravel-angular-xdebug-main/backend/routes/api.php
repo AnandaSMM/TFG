@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductoController;
@@ -32,6 +33,9 @@ Route::middleware('auth:sanctum')->get('/reservas', [AlquilerController::class, 
 Route::middleware('auth:sanctum')->get('/prestados',[AlquilerController::class, 'listarProductosPrestados']);
 Route::middleware('auth:sanctum')->put('/alquileres/{id}/cancelar',[AlquilerController::class, 'cancelarAlquiler']);
 Route::middleware('auth:sanctum')->put('/alquileres/{id}/devolucion', [AlquilerController::class, 'confirmarDevolucion']);
+
+Route::get('/chat/{id}/listar', [ChatController::class, 'listarConversaciones']);
+Route::get('/chat/{id}/conversacion', [ChatController::class, 'obtenerConversacion']);
 
 //google login
 Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect']);

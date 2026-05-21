@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             ProductoSeeder::class,
             ImagenProductoSeeder::class,
             ProductoCategoriaSeeder::class,
+            ChatSeeder::class,
         ]);
     }
 }

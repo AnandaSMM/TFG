@@ -39,6 +39,13 @@ export class NavbarComponent {
 
       this.menuPerfilAbierto = false;
     }
+    toggleChat() {
+      // 1. Igual que el perfil: pone el menú abierto en false por si acaso estamos en móvil
+      this.menuAbierto = false; 
+
+      // 2. Escribe en la ruta /chats para cambiar de pantalla
+      this.router.navigate(['/chats']); 
+    }
 
     togglePerfil() {
       this.menuPerfilAbierto =

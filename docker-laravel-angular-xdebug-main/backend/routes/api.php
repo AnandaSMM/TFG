@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\AlquilerController;
 use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\InstalacionController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -36,3 +37,5 @@ Route::middleware('auth:sanctum')->put('/alquileres/{id}/devolucion', [AlquilerC
 //google login
 Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect']);
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback']);
+
+Route::get('/instalaciones', [InstalacionController::class, 'index']);

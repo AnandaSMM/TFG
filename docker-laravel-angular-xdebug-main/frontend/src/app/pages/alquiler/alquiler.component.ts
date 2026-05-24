@@ -29,6 +29,7 @@ export class AlquilerComponent implements OnInit {
   error = '';
   mensaje = '';
   cargando = false;
+  enviandoAlquiler = false;
   precioAlquilerDia = 0;
   producto: any = null;
   reservasCalendario: any[] = [];
@@ -194,6 +195,9 @@ export class AlquilerComponent implements OnInit {
   }
 
   alquilarProducto(): void {
+    if (this.enviandoAlquiler) {
+      return;
+    }
 
      if (!this.fechasValidas()) {
       this.mensaje = '';
@@ -210,12 +214,24 @@ export class AlquilerComponent implements OnInit {
       next: () => {
         this.mensaje = 'Producto alquilado correctamente';
         this.error = '';
+        this.enviandoAlquiler = false;
 
         this.cargarReservasProducto(); 
       },
       error: (err) => {
-        this.error = err.error?.message || 'Error al alquilar';
+        const mensajeBack = err.error?.message || '';
+
+        if (
+          mensajeBack.includes('Demasiados emails') ||
+          mensajeBack.includes('emails por segundo')
+        ) {
+          this.error = 'Estás intentando alquilar demasiado rápido. Espera unos segundos y vuelve a intentarlo.';
+        } else {
+          this.error = mensajeBack || 'Error al alquilar';
+        }
+
         this.mensaje = '';
+        this.enviandoAlquiler = false;
       }
     });
   }

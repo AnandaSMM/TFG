@@ -111,5 +111,22 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
+  // para sacar la foto de la cuenta de google salma
+  getFotoPerfil(): string {
+    if (!this.userData?.foto) {
+      return 'https://i.pravatar.cc/200';
+    }
+
+    // Si viene de Google
+    if (
+      this.userData.foto.startsWith('http://') ||
+      this.userData.foto.startsWith('https://')
+    ) {
+      return this.userData.foto;
+    }
+
+    // Si es una imagen local del storage
+    return 'http://localhost:8000/storage/' + this.userData.foto;
+  }
 
 }

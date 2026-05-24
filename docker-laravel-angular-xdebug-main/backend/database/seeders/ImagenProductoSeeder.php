@@ -18,7 +18,7 @@ class ImagenProductoSeeder extends Seeder
             ['producto_id' => 2, 'imagen' => 'productos/tres.jpg'],
             ['producto_id' => 3, 'imagen' => 'productos/balon_baloncesto.jpg'],
             ['producto_id' => 3, 'imagen' => 'productos/dos.jpg'],
-            ['producto_id' => 3, 'imagen' => 'productos/dos.jpg'],
+            ['producto_id' => 3, 'imagen' => 'productos/tres.jpg'],
             ['producto_id' => 4, 'imagen' => 'productos/raqueta_tennis.jpg'],
             ['producto_id' => 5, 'imagen' => 'productos/tacos_futbol.jpg'],
             ['producto_id' => 6, 'imagen' => 'productos/red_voley.jpg'],
@@ -38,9 +38,9 @@ class ImagenProductoSeeder extends Seeder
             ['producto_id' => 14, 'imagen' => 'productos/dos.jpg'],
             ['producto_id' => 14, 'imagen' => 'productos/tres.jpg'],
             ['producto_id' => 15, 'imagen' => 'productos/bolsa_golf.jpg'],
-            ['producto_id' => 16, 'imagen' => 'productos/uno.jpg'],
+            ['producto_id' => 16, 'imagen' => 'productos/zapatillas_ballet.jpg'],
             ['producto_id' => 16, 'imagen' => 'productos/dos.jpg'],
-            ['producto_id' => 17, 'imagen' => 'productos/uno.jpg'],
+            ['producto_id' => 17, 'imagen' => 'productos/pesas_gimnasio.jpg'],
 
         ]);
     }

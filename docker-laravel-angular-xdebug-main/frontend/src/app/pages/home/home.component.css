@@ -1,0 +1,87 @@
+.loading-products {
+  margin-top: 2rem;
+}
+
+.skeleton-card {
+  pointer-events: none;
+}
+
+.skeleton {
+  animation: pulse 1.5s infinite ease-in-out;
+  background: #e5e7eb;
+  border-radius: 12px;
+}
+
+.skeleton-image {
+  width: 100%;
+  height: 220px;
+  border-radius: 18px 18px 0 0;
+}
+
+.skeleton-title {
+  height: 24px;
+  width: 70%;
+  margin-bottom: 14px;
+}
+
+.skeleton-text {
+  height: 18px;
+  width: 50%;
+  margin-bottom: 14px;
+}
+
+.skeleton-price {
+  height: 20px;
+  width: 35%;
+}
+
+.loading-grid {
+  opacity: 0.55;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.loading-grid {
+  opacity: 0.55;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.floating-loader {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  background: white;
+  padding: 12px;
+  border-radius: 50%;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+
+.product-image-wrapper {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
+}

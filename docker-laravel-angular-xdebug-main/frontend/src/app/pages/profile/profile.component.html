@@ -335,9 +335,7 @@
 
         <div class="avatar-wrapper">
           <img
-            [src]="userData.foto 
-              ? 'http://localhost:8000/storage/' + userData.foto 
-              : 'https://i.pravatar.cc/200'"
+            [src]="getFotoPerfil()"
             alt="avatar"
             class="avatar"
           />

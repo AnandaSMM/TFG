@@ -115,11 +115,23 @@
                 <button
                   type="submit"
                   class="btn btn-primary w-100 fw-bold"
-                  [disabled]="!fechaInicio || !fechaFin || precioTotal <= 0"
+                  [disabled]="
+                    !fechaInicio ||
+                    !fechaFin ||
+                    precioTotal <= 0 ||
+                    enviandoAlquiler
+                  "
                 >
-                  Confirmar alquiler
-                </button>
 
+                  <span *ngIf="!enviandoAlquiler">
+                    Confirmar alquiler
+                  </span>
+
+                  <span *ngIf="enviandoAlquiler">
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Procesando reserva...
+                  </span>
+                </button>
               </form>
             </div>
           </div>

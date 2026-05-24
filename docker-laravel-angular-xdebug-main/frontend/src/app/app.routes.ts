@@ -8,6 +8,7 @@ import { CalendarioComponent } from './pages/calendar/calendar.component';
 import { AlquilerComponent } from './pages/alquiler/alquiler.component';
 import { DevolucionComponent } from './pages/devolucion/devolucion.component';
 import { GoogleComponent } from './pages/googleLogin/google.component';
+import { PerfilUsuarioComponent } from "./pages/perfil-usuario/perfil-usuario.component";
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -19,5 +20,6 @@ export const routes: Routes = [
   { path: 'alquilar/:id', component: AlquilerComponent, canActivate: [authGuard] },
   { path: 'devolucion/:id', component: DevolucionComponent, canActivate: [authGuard] },
   { path: 'alquileres/:id/cancelar', component: CalendarioComponent, canActivate: [authGuard] },
-  { path: 'auth/google/callback', component: GoogleComponent}
+  { path: 'auth/google/callback', component: GoogleComponent},
+  {path: 'perfil/:id',component: PerfilUsuarioComponent, canActivate: [authGuard]}
 ];

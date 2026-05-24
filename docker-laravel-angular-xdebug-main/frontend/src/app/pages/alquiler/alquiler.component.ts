@@ -32,6 +32,7 @@ export class AlquilerComponent implements OnInit {
   precioAlquilerDia = 0;
   producto: any = null;
   reservasCalendario: any[] = [];
+  fechaMinima = '';
 
   calendarOptions: any = {
     plugins: [dayGridPlugin, interactionPlugin],
@@ -55,6 +56,12 @@ export class AlquilerComponent implements OnInit {
     events: [],
 
     selectAllow: (selectInfo: any) => {
+      const hoy = new Date(this.obtenerHoy() + 'T00:00:00');
+
+      if (selectInfo.start <= hoy) {
+        return false;
+      }
+
       return !this.reservasCalendario.some((reserva: any) => {
         const inicioReserva = new Date(reserva.start + 'T00:00:00');
         const finReserva = new Date(reserva.end + 'T00:00:00');
@@ -69,11 +76,39 @@ export class AlquilerComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.fechaMinima = this.obtenerHoy();
     this.productoId = Number(this.route.snapshot.paramMap.get('id'));
     this.cargarProducto();
     this.cargarReservasProducto();
   }
 
+  private obtenerHoy(): string {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    return this.formatearFecha(hoy);
+  }
+
+  private fechasValidas(): boolean {
+    this.error = '';
+    if (!this.fechaInicio || !this.fechaFin) {
+      this.error = 'Debes seleccionar fecha de inicio y fecha de fin';
+      return false;
+    }
+
+    const hoy = new Date(this.obtenerHoy() + 'T00:00:00');
+    const inicio = new Date(this.fechaInicio + 'T00:00:00');
+    const fin = new Date(this.fechaFin + 'T00:00:00');
+
+    if (inicio <= hoy) {
+      this.error = 'No puedes alquilar hoy ni en fechas pasadas';
+      return false;
+    }
+    if (fin < inicio) {
+      this.error = 'La fecha fin no puede ser anterior a la fecha inicio';
+      return false;
+    }
+    return true;
+  }
 
  cargarReservasProducto(): void {
     this.cargando = true;
@@ -159,6 +194,12 @@ export class AlquilerComponent implements OnInit {
   }
 
   alquilarProducto(): void {
+
+     if (!this.fechasValidas()) {
+      this.mensaje = '';
+      return;
+    }
+    
     const data = {
       fecha_inicio: this.fechaInicio,
       fecha_fin: this.fechaFin,

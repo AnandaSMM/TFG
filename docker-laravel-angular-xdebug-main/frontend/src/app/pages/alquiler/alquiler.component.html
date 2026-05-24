@@ -45,6 +45,7 @@
                     class="form-control"
                     name="fechaInicio"
                     [(ngModel)]="fechaInicio"
+                    [min]="fechaMinima"
                     (change)="calcularPrecioTotal()"
                     required
                   >
@@ -57,6 +58,7 @@
                     class="form-control"
                     name="fechaFin"
                     [(ngModel)]="fechaFin"
+                    [min]="fechaMinima"
                     (change)="calcularPrecioTotal()"
                     required
                   >

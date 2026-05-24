@@ -37,7 +37,7 @@ class ProductoSeeder extends Seeder
                 'precio_venta' => 25.00,
                 'precio_alquiler_dia' => 5.00,
                 'vendido' => false,
-                'disponible' => false,
+                'disponible' => true,
                 'localidad' => 'Valencia',
             ],
             [
@@ -77,7 +77,7 @@ class ProductoSeeder extends Seeder
                 'precio_venta' => 120.00,
                 'precio_alquiler_dia' => 20.00,
                 'vendido' => false,
-                'disponible' => false,
+                'disponible' => true,
                 'localidad' => 'Barcelona',
             ],
             [
@@ -137,7 +137,7 @@ class ProductoSeeder extends Seeder
                 'precio_venta' => 45.00,
                 'precio_alquiler_dia' => 5.50,
                 'vendido' => false,
-                'disponible' => false,
+                'disponible' => true,
                 'localidad' => 'Bilbao',
             ],
             [

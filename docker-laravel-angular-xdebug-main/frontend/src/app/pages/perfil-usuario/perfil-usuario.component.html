@@ -1,0 +1,138 @@
+<div class="profile-page">
+
+  <div *ngIf="cargando" class="text-center py-5">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-2 text-muted">Cargando perfil...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <ng-container *ngIf="!cargando && !error">
+
+    <div class="page-header">
+      <h1>Perfil de {{ userData.nombre }}</h1>
+      <p>Consulta la información pública de este usuario</p>
+    </div>
+
+    <div class="profile-grid">
+
+      <div>
+
+        <div class="card user-card">
+
+          <div class="avatar-wrapper">
+            <img
+              [src]="getFotoUsuario()"
+              alt="avatar"
+              class="avatar"
+            />
+          </div>
+
+          <h2>{{ userData.nombre }}</h2>
+
+          <span class="member-date">
+            Miembro desde Enero 2025
+          </span>
+
+          <div class="rating">
+            ⭐ 4.8 <span>(23 valoraciones)</span>
+          </div>
+
+        </div>
+
+        <div class="card info-card">
+
+          <h3>Información del usuario</h3>
+
+          <div class="info-group">
+            <label>Nombre completo</label>
+            <p>{{ userData.nombre }}</p>
+          </div>
+
+          <div class="info-group">
+            <label>Email</label>
+            <p>{{ userData.email || 'No disponible' }}</p>
+          </div>
+
+          <div class="info-group">
+            <label>Teléfono</label>
+            <p>{{ userData.telefono || 'No proporcionado' }}</p>
+          </div>
+
+          <div class="actions">
+            <button class="back-btn" (click)="volver()">
+              Volver
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div>
+
+        <div class="stats-grid">
+
+          <div class="stat-card blue">
+            <span class="number">{{ alquileresTotales }}</span>
+            <span class="label">Alquileres Totales</span>
+          </div>
+
+          <div class="stat-card orange">
+            <span class="number">{{ alquileresActivos }}</span>
+            <span class="label">Alquileres Activos</span>
+          </div>
+
+          <div class="stat-card green">
+            <span class="number">4.8</span>
+            <span class="label">Valoración Media</span>
+          </div>
+
+        </div>
+
+        <div class="card">
+
+          <div class="card-header">
+            <h3>⭐ Productos Más Populares</h3>
+            <p>Los productos más alquilados de este usuario</p>
+          </div>
+
+          <div class="product-item">
+            <div class="product-left">
+              <div class="rank orange-bg">1</div>
+              <div>
+                <h4>Producto destacado</h4>
+                <span>12 alquileres</span>
+              </div>
+            </div>
+
+            <div class="top-badge">
+              Top 1
+            </div>
+          </div>
+
+          <div class="product-item">
+            <div class="product-left">
+              <div class="rank blue-bg">2</div>
+              <div>
+                <h4>Producto destacado</h4>
+                <span>9 alquileres</span>
+              </div>
+            </div>
+
+            <div class="top-badge">
+              Top 2
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

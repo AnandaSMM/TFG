@@ -1,12 +1,13 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute,Router } from '@angular/router';
 import { AlquilerService } from '../../services/alquiler.service';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { ProductoService } from '../../services/producto.service';
+
 
 declare var bootstrap: any;
 @Component({
@@ -20,6 +21,8 @@ export class AlquilerComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private location = inject(Location);
   private productoService = inject(ProductoService);
+  private router = inject(Router);
+  
 
   productoId!: number;
   fechaInicio = '';
@@ -204,5 +207,20 @@ export class AlquilerComponent implements OnInit {
         this.cargando = false;
       }
     });
+  }
+  contactarPropietario(): void {
+    const propietarioId = this.producto?.usuario?.id || this.producto?.usuario_id;
+    const propietarioNombre = this.producto?.usuario?.nombre;
+    if (propietarioId) {
+      this.router.navigate(['/chats'], { 
+        queryParams: {
+          nuevoChatCon: propietarioId,
+          nombrePropietario: propietarioNombre
+        } 
+      });
+    } else {
+      console.error('No se encontró el ID ');
+      alert('No se puede contactar con el propietario en este momento.');
+    }
   }
 }

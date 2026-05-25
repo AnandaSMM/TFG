@@ -3,7 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Chat extends Model{
+class Mensaje extends Model{
     protected $table='mensajes';
     public $timestamps = false;
 

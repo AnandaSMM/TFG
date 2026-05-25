@@ -20,7 +20,8 @@ class UserController extends Controller
 
         return response()->json($user);
     }
-    public function actualizarFoto(Request $request,$id){
+    public function actualizarFoto(Request $request,$id)
+    {
         $user = User::find($id);
         if (!$user) {
             return response()->json([

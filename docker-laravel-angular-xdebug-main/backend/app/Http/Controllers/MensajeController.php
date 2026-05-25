@@ -3,27 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Chat;
+use App\Models\Mensaje;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\User;
 
 
-class ChatController extends Controller
+class MensajeController extends Controller
 {
 
-    public function listarConversaciones(Request $request,$id): JsonResponse
+    public function listarConversaciones(Request $request): JsonResponse
     {
-        $user = User::find($id);
-         if (!$user) {
-            return response()->json([
-                'message' => 'Usuario no encontrado'
-            ], 404);
-        }
+        $id=$request->user()?->id;
         try {
 
 
-            $mensajes=Chat::with(['emisor', 'receptor'])
+            $mensajes=Mensaje::with(['emisor', 'receptor'])
             ->where('emisor_id',$id)
             ->orWhere('receptor_id',$id)
             ->orderBy('fecha','desc')
@@ -66,29 +61,26 @@ class ChatController extends Controller
         }
     }
     
-    public function obtenerConversacion(Request $request, $id): JsonResponse
+    public function obtenerConversacion(Request $request,$id): JsonResponse
     {
-        $user = User::find($id);
-         if (!$user) {
-            return response()->json([
-                'message' => 'Usuario no encontrado'
-            ], 404);
-        }
+        $miId=$request->user()?->id;
         try {
-            $request->validate([//validacion de q el otro exista 
-                'persona_id'   => 'required|exists:usuarios,id',
-            ]);
+            $otroUsuario=User::find($id);
+            if (!$otroUsuario) {
+                return response()->json([
+                    'message' => 'Usuario no encontrado'
+                ], 404);
+            }
+            $otroId=$otroUsuario->id;
 
-            $otroId = $request->input('persona_id');
-
-            $mensajes = Chat::with(['emisor', 'receptor'])
-            ->where(function ($query) use ($id, $otroId) {
-                $query->where('emisor_id', $id)
+            $mensajes = Mensaje::with(['emisor', 'receptor'])
+            ->where(function ($query) use ($miId, $otroId) {
+                $query->where('emisor_id', $miId)
                       ->where('receptor_id', $otroId);
             })
-            ->orWhere(function ($query) use ($id, $otroId) {
+            ->orWhere(function ($query) use ($miId, $otroId) {
                 $query->where('emisor_id', $otroId)
-                      ->where('receptor_id', $id);
+                      ->where('receptor_id', $miId);
             })
             ->orderBy('fecha', 'asc') 
             ->get();
@@ -99,27 +91,21 @@ class ChatController extends Controller
 
         } catch (\Throwable $e) {
            return response()->json([
-                'error' => 'No se pudo enviar el mensaje',
+                'error' => 'No se pudo obtener la conversación',
                 'details' => $e->getMessage()
             ], 500);
         }
     }
-    /*
-    public function enviarMensaje(Request $request,$id): JsonResponse
+    
+    public function enviarMensaje(Request $request): JsonResponse
     {
+        $id=$request->user()?->id;
         try {
-            $user = User::find($id);
-            if (!$user) {
-                return response()->json([
-                    'message' => 'Usuario no encontrado'
-                ], 404);
-            }
             $request->validate([
-                'emisor_id'   => 'required|exists:usuarios,id',
                 'receptor_id' => 'required|exists:usuarios,id',
                 'mensaje'     => 'required|string|min:1',
             ]);
-            $nuevoMensaje= Chat::create([
+            $nuevoMensaje= Mensaje::create([
                 'emisor_id'   => $id,
                 'receptor_id' => $request->input('receptor_id'),
                 'mensaje'     => $request->input('mensaje'),
@@ -138,5 +124,35 @@ class ChatController extends Controller
             ], 500);
         }
     }
-        */
+
+    public function marcarLeido(Request $request,$id): JsonResponse
+    {
+        $miId=$request->user()?->id;
+        try {
+            $otroUsuario=User::find($id);
+            if (!$otroUsuario) {
+                return response()->json([
+                    'message' => 'Usuario no encontrado'
+                ], 404);
+            }
+            $otroId=$otroUsuario->id;
+
+            Mensaje::where('emisor_id', $otroId)
+            ->where('receptor_id', $miId)
+            ->where('leido', false)
+            ->update(['leido' => true]);
+
+            return response()->json([
+                'message' => 'Mensajes marcados como leídos'
+            ], 200);
+
+        } catch (\Throwable $e) {
+           return response()->json([
+                'error' => 'Error al atuclizar el visto',
+                'details' => $e->getMessage()
+            ], 500);
+        }
+
+    }
+
 }

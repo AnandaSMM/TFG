@@ -33,6 +33,8 @@ export class ProfileComponent implements OnInit {
   alquileresTotales=0;
   alquileresActivos=0;
 
+  fechaRegistro: string = '';
+
   ngOnInit() {
     // Intentamos sacar los datos del usuario logueado del localStorage
     const savedUser = localStorage.getItem('user');

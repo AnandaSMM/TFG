@@ -9,18 +9,58 @@ export class ChatService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8000/api';
 
-  listarConversaciones(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/chat/${id}/listar`);
+  listarConversaciones(): Observable<any> {
+    const token = localStorage.getItem('token');
+    return this.http.get(
+      `${this.apiUrl}/chat/listar`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json'
+        }
+      }
+    );
   }
 
   
-  obtenerConversacion(id: number, receptorId: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/chat/${id}/conversacion?persona_id=${receptorId}`);
+  obtenerConversacion(receptorId: number): Observable<any> {
+    const token = localStorage.getItem('token');
+    return this.http.get(
+      `${this.apiUrl}/chat/${receptorId}/conversacion`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json'
+        }
+      }
+    );
   }
   
-  /** 
+  
   enviarMensaje(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/chat/enviar`, data);
+    const token = localStorage.getItem('token');
+    return this.http.post(`${this.apiUrl}/chat/enviar`, 
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json'
+        }
+      }
+    );
   }
-  */
+  marcarComoLeidos(idEmisor: number): Observable<any> {
+    const token = localStorage.getItem('token');
+    return this.http.put(
+      `${this.apiUrl}/chat/${idEmisor}/leer`, 
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json'
+        }
+      }
+    );
+  }
+  
 }

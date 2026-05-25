@@ -1,5 +1,3 @@
-<!-- profile.component.html -->
-
 <style>
   * {
     box-sizing: border-box;
@@ -357,13 +355,14 @@
         <h2>{{ userData.nombre }}</h2>
 
         <span class="member-date">
-          Miembro desde Enero 2025
+          <!-- <strong>{{ userData.fechaRegistro | date:'dd/MM/yyyy' }}</strong> -->
         </span>
 
-        <div class="rating">
-          ⭐ 4.8 <span>(23 valoraciones)</span>
-        </div>
-
+        <!--  valoraciones q por el momento no estan
+          <div class="rating">
+            ⭐ Valoraciones <span></span>
+          </div>
+        -->
         <button class="edit-btn" (click)="activarEdicion()"  *ngIf="!editando">
           Editar Perfil
         </button>

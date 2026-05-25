@@ -68,8 +68,13 @@
     </div>
 
     <div class="chat-activo-footer">
-      <input type="text" placeholder="Escribe un mensaje...">
-      <button class="btn-enviar">Enviar</button>
+      <input 
+        type="text" 
+        [(ngModel)]="nuevoMensaje" 
+        (keyup.enter)="enviarMensaje()" 
+        placeholder="Escribe tu mensaje..."
+      >
+      <button class="btn-enviar" (click)="enviarMensaje()">Enviar</button>
     </div>
 
   </main>

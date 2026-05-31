@@ -37,6 +37,7 @@ export class ChatService {
   }
   
   
+  
   enviarMensaje(data: any): Observable<any> {
     const token = localStorage.getItem('token');
     return this.http.post(`${this.apiUrl}/chat/enviar`, 
@@ -49,6 +50,7 @@ export class ChatService {
       }
     );
   }
+
   marcarComoLeidos(idEmisor: number): Observable<any> {
     const token = localStorage.getItem('token');
     return this.http.put(

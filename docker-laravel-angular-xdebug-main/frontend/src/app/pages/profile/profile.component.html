@@ -358,11 +358,6 @@
           <!-- <strong>{{ userData.fechaRegistro | date:'dd/MM/yyyy' }}</strong> -->
         </span>
 
-        <!--  valoraciones q por el momento no estan
-          <div class="rating">
-            ⭐ Valoraciones <span></span>
-          </div>
-        -->
         <button class="edit-btn" (click)="activarEdicion()"  *ngIf="!editando">
           Editar Perfil
         </button>
@@ -441,7 +436,7 @@
         </div>
 
         <div class="stat-card green">
-          <span class="number">1,245€</span>
+          <span class="number">{{ ingresosTotales }} €</span>
           <span class="label">Ingresos Totales</span>
         </div>
          <!-- PRODUCTS 
@@ -456,71 +451,35 @@
       <div class="card">
 
         <div class="card-header">
-          <h3>⭐ Productos Más Populares</h3>
+          <h3>Productos mas alquilados</h3>
           <p>Los productos que más han alquilado de ti</p>
         </div>
+        <div *ngIf="productosmasAlquilados.length === 0" class="product-item" style="justify-content: center; color: gray;">
+          Aún no tienes estadísticas de alquileres.
+        </div>
+        
 
-        <div class="product-item">
+        <div *ngFor="let prod of productosmasAlquilados; let i = index" class="product-item">
 
-          <div class="product-left">
+        <div class="product-left">
 
-            <div class="rank orange-bg">
-              1
-            </div>
-
-            <div>
-              <h4>Palos de Golf</h4>
-              <span>12 alquileres</span>
-            </div>
-
+          <div class="rank" [ngClass]="{
+            'orange-bg': i === 0,
+            'blue-bg': i === 1,
+            'gray-bg': i === 2
+          }">
+            {{ i + 1 }}
           </div>
 
-          <div class="top-badge">
-            Top 1
+          <div>
+            <h4>{{ prod.nombre }}</h4>
+            <span>{{ prod.alquileres_count }} {{ prod.alquileres_count === 1 ? 'alquiler' : 'alquileres' }}</span>
           </div>
 
         </div>
 
-        <div class="product-item">
-
-          <div class="product-left">
-
-            <div class="rank blue-bg">
-              2
-            </div>
-
-            <div>
-              <h4>Bicicleta de Montaña</h4>
-              <span>9 alquileres</span>
-            </div>
-
-          </div>
-
-          <div class="top-badge">
-            Top 2
-          </div>
-
-        </div>
-
-        <div class="product-item">
-
-          <div class="product-left">
-
-            <div class="rank gray-bg">
-              3
-            </div>
-
-            <div>
-              <h4>Equipo de Béisbol</h4>
-              <span>7 alquileres</span>
-            </div>
-
-          </div>
-
-          <div class="top-badge">
-            Top 3
-          </div>
-
+        <div class="top-badge">
+          Top {{ i + 1 }}
         </div>
 
       </div>

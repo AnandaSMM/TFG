@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Producto;
 
 class UserController extends Controller
 {
@@ -99,17 +100,33 @@ class UserController extends Controller
             'alquileresRecibidos as alquileres_activos' => function ($query) {
                 $query->where('estado', 'activo');
             }
-        ])->find($id);
-
+            
+        ])
+        ->find($id);
+        
         if (!$user) {
             return response()->json([
                 'message' => 'Usuario no encontrado'
             ], 404);
         }
+
+        $ingresosTotales = $user->alquileresRecibidos()
+        ->whereIn('estado', ['activo', 'finalizado'])
+        ->sum('precio_total');
+
+       $productosTop = Producto::where('usuario_id', (int)$id)
+        ->select('id', 'nombre') 
+        ->withCount('alquileres')
+        ->orderBy('alquileres_count', 'desc')
+        ->limit(3)
+        ->get();
+
         return response()->json([
             'alquileres'    => $user->total_alquileres,
             'alquileresAct' => $user->alquileres_activos,
-        ]);
+            'ingresos'      => (float) ($ingresosTotales ?? 0),
+            'productosEstrella'  => $productosTop,
+        ],200);
     }
 
 

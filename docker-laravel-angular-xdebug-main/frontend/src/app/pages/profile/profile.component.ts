@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
-import { info } from 'node:console';
+
 
 @Component({
   selector: 'app-profile',
@@ -32,19 +32,30 @@ export class ProfileComponent implements OnInit {
   }
   alquileresTotales=0;
   alquileresActivos=0;
+  ingresosTotales=0;
+  productosmasAlquilados: any[] = [];
+
+  fechaRegistro: string = '';
 
   ngOnInit() {
-    // Intentamos sacar los datos del usuario logueado del localStorage
     const savedUser = localStorage.getItem('user');
+
     if (savedUser) {
-      const user = JSON.parse(savedUser);
-      this.userData.id = user.id;
-      this.userData.nombre = user.nombre;
-      this.userData.email = user.email;
-      this.userData.telefono = user.telefono || '';
-      this.userData.foto = user.foto || '';
-      this.userData.password= '';
+      try {
+        const user = JSON.parse(savedUser);
+        this.userData.id = user.id;
+        this.userData.nombre = user.nombre;
+        this.userData.email = user.email;
+        this.userData.telefono = user.telefono || '';
+        this.userData.foto = user.foto || '';
+        this.userData.password = '';
+      } catch (e) {
+        console.error('Error al parsear el usuario del localStorage:', e);
+      }
     }
+    if (this.userData.id > 0) {
+      this.info();
+    } 
   }
   onFileSelected(event: any) {
     const archivo: File = event.target.files[0];
@@ -102,12 +113,15 @@ export class ProfileComponent implements OnInit {
       next: (res) => {
         this.alquileresTotales = res.alquileres || 0;
         this.alquileresActivos = res.alquileresAct || 0;
+        this.ingresosTotales = res.ingresos || 0;
+        this.productosmasAlquilados = res.productosEstrella || [];
       },
       error: (err) => {
         console.error('Error al obtener estadísticas', err)
         this.alquileresTotales = 0;
         this.alquileresActivos = 0;
-
+        this.ingresosTotales =0;
+        this.productosmasAlquilados = [];
       }
     });
   }

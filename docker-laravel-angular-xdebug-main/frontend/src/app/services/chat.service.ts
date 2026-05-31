@@ -5,18 +5,42 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class ChatService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8000/api';
 
-  obtenerUsuario(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/usuarios/${id}`);
+  listarConversaciones(): Observable<any> {
+    const token = localStorage.getItem('token');
+    return this.http.get(
+      `${this.apiUrl}/chat/listar`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json'
+        }
+      }
+    );
   }
 
-  actualizarUsuario(id: number, data: any): Observable<any> {
+  
+  obtenerConversacion(receptorId: number): Observable<any> {
     const token = localStorage.getItem('token');
-    return this.http.put(
-      `${this.apiUrl}/usuarios/${id}`, 
+    return this.http.get(
+      `${this.apiUrl}/chat/${receptorId}/conversacion`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json'
+        }
+      }
+    );
+  }
+  
+  
+  
+  enviarMensaje(data: any): Observable<any> {
+    const token = localStorage.getItem('token');
+    return this.http.post(`${this.apiUrl}/chat/enviar`, 
       data,
       {
         headers: {
@@ -27,24 +51,11 @@ export class UserService {
     );
   }
 
-  actualizarFoto(id: number, formData: FormData): Observable<any> {
+  marcarComoLeidos(idEmisor: number): Observable<any> {
     const token = localStorage.getItem('token');
-    return this.http.post(
-      `${this.apiUrl}/usuarios/foto/${id}`, 
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json'
-        }
-      }
-    );
-  }
-
-  eliminarUsuario(id: number): Observable<any> {
-    const token = localStorage.getItem('token');
-    return this.http.delete(
-      `${this.apiUrl}/usuarios/${id}`,
+    return this.http.put(
+      `${this.apiUrl}/chat/${idEmisor}/leer`, 
+      {},
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -54,7 +65,4 @@ export class UserService {
     );
   }
   
-  obtenerStats(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/usuarios/${id}/stats`);
-  }
 }

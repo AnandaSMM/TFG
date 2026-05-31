@@ -1,12 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute,Router } from '@angular/router';
 import { AlquilerService } from '../../services/alquiler.service';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { ProductoService } from '../../services/producto.service';
+import { ChatService } from '../../services/chat.service';
+
 
 declare var bootstrap: any;
 @Component({
@@ -20,6 +22,9 @@ export class AlquilerComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private location = inject(Location);
   private productoService = inject(ProductoService);
+  private chatService = inject(ChatService);
+  private router = inject(Router);
+  
 
   productoId!: number;
   fechaInicio = '';
@@ -165,18 +170,38 @@ export class AlquilerComponent implements OnInit {
       opcion_compra: this.opcionCompra
     };
 
+    const usuario = JSON.parse(localStorage.getItem('user') || '{}');
+
     this.alquilerService.alquilarProducto(this.productoId, data).subscribe({
       next: () => {
         this.mensaje = 'Producto alquilado correctamente';
         this.error = '';
 
         this.cargarReservasProducto(); 
+
+        this.productoService.obtenerProductoSimple(this.productoId).subscribe(producto => {
+          const data1 = {
+            receptor_id: producto.data.usuario.id,
+            mensaje: `Hola, soy ${usuario.nombre}, quiero alquilar el producto: ${producto.data.nombre}`
+          };
+
+          this.chatService.enviarMensaje(data1).subscribe({
+            next: () => {
+              console.log('Chat creado correctamente');
+            },
+            error: (err) => {
+              console.error('Error creando chat', err);
+            }
+          });
+      });
+
       },
       error: (err) => {
         this.error = err.error?.message || 'Error al alquilar';
         this.mensaje = '';
       }
     });
+    
   }
 
   private formatearFecha(fecha: Date): string {
@@ -204,5 +229,20 @@ export class AlquilerComponent implements OnInit {
         this.cargando = false;
       }
     });
+  }
+  contactarPropietario(): void {
+    const propietarioId = this.producto?.usuario?.id || this.producto?.usuario_id;
+    const propietarioNombre = this.producto?.usuario?.nombre;
+    if (propietarioId) {
+      this.router.navigate(['/chats'], { 
+        queryParams: {
+          nuevoChatCon: propietarioId,
+          nombrePropietario: propietarioNombre
+        } 
+      });
+    } else {
+      console.error('No se encontró el ID ');
+      alert('No se puede contactar con el propietario en este momento.');
+    }
   }
 }

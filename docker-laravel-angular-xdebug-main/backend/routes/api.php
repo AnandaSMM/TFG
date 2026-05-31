@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MensajeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductoController;
@@ -14,13 +15,14 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->get('/productos', [ProductoController::class, 'listarProductos']);
-Route::get('/usuarios/{id}', [UserController::class, 'obtenerUsuario']);
-Route::put('/usuarios/{id}', [UserController::class, 'actualizarUsuario']);
-Route::get('/usuarios/{id}/stats', [UserController::class, 'infoUsuario']);
-Route::delete('/usuarios/{id}', [UserController::class, 'eliminarUsuario']);
-Route::post('/usuarios/foto/{id}', [UserController::class, 'actualizarFoto']);
 Route::get('/productos/{id}', [ProductoController::class, 'obtenerProducto']);
 Route::get('/productos/{id}/simple', [ProductoController::class, 'obtenerProductoSinImagenes']);
+
+Route::get('/usuarios/{id}', [UserController::class, 'obtenerUsuario']);
+Route::middleware('auth:sanctum')->put('/usuarios/{id}', [UserController::class, 'actualizarUsuario']);
+Route::get('/usuarios/{id}/stats', [UserController::class, 'infoUsuario']);
+Route::middleware('auth:sanctum')->delete('/usuarios/{id}', [UserController::class, 'eliminarUsuario']);
+Route::middleware('auth:sanctum')->post('/usuarios/foto/{id}', [UserController::class, 'actualizarFoto']);
 
 Route::get('/categorias', [CategoriaController::class, 'listarTodo']);
 Route::post('/categorias', [CategoriaController::class, 'crearCategoria']);
@@ -33,6 +35,11 @@ Route::middleware('auth:sanctum')->get('/reservas', [AlquilerController::class, 
 Route::middleware('auth:sanctum')->get('/prestados',[AlquilerController::class, 'listarProductosPrestados']);
 Route::middleware('auth:sanctum')->put('/alquileres/{id}/cancelar',[AlquilerController::class, 'cancelarAlquiler']);
 Route::middleware('auth:sanctum')->put('/alquileres/{id}/devolucion', [AlquilerController::class, 'confirmarDevolucion']);
+
+Route::middleware('auth:sanctum')->get('/chat/listar', [MensajeController::class, 'listarConversaciones']);
+Route::middleware('auth:sanctum')->get('/chat/{id}/conversacion', [MensajeController::class, 'obtenerConversacion']);
+Route::middleware('auth:sanctum')->post('/chat/enviar',[MensajeController::class,'enviarMensaje']);
+Route::middleware('auth:sanctum')->put('/chat/{id}/leer', [MensajeController::class, 'marcarLeido']);
 
 //google login
 Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect']);

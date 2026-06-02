@@ -113,7 +113,7 @@ export class AlquilerComponent implements OnInit {
 
  cargarReservasProducto(): void {
     this.cargando = true;
-    this.alquilerService.listarReservados().subscribe({
+    this.alquilerService.listarReservasProducto(this.productoId).subscribe({
       next: (res: any) => {
         const reservas = res.reservas || [];
 

@@ -102,6 +102,25 @@ class AlquilerController extends Controller
         ]);
     }
 
+    public function listarReservasProducto($productoId)
+    {
+        $reservas = Alquiler::where('producto_id', $productoId)
+            ->where('estado', 'activo')
+            ->orderBy('fecha_inicio', 'asc')
+            ->get([
+                'id',
+                'producto_id',
+                'fecha_inicio',
+                'fecha_fin',
+                'estado'
+            ]);
+
+        return response()->json([
+            'message' => 'Reservas del producto obtenidas correctamente',
+            'reservas' => $reservas
+        ]);
+    }
+
     public function listarProductosPrestados(Request $request)
     {
         $usuario = $request->user();

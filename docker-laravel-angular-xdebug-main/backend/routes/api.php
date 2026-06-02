@@ -33,6 +33,7 @@ Route::get('/productos/{id}/categorias', [CategoriaController::class, 'categoria
 Route::middleware('auth:sanctum')->post('/productos/{id}/alquilar', [AlquilerController::class, 'alquilar']);
 Route::middleware('auth:sanctum')->get('/reservas', [AlquilerController::class, 'listarReservados']);
 Route::middleware('auth:sanctum')->get('/prestados',[AlquilerController::class, 'listarProductosPrestados']);
+Route::middleware('auth:sanctum')->get('/productos/{productoId}/reservas', [AlquilerController::class, 'listarReservasProducto']);
 Route::middleware('auth:sanctum')->put('/alquileres/{id}/cancelar',[AlquilerController::class, 'cancelarAlquiler']);
 Route::middleware('auth:sanctum')->put('/alquileres/{id}/devolucion', [AlquilerController::class, 'confirmarDevolucion']);
 

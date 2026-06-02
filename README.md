@@ -205,11 +205,18 @@ composer install
 Este comando instala todas las dependencias necesarias del proyecto Laravel.
 
 ---
-### Cragar migraciones y seeders
+### Cargar migraciones y seeders
 
 ```bash
 php artisan storage:link
 php artisan migrate:fresh --seed
+```
+
+---
+### Login con Google
+
+```bash
+composer require laravel/socialite
 ```
 
 ### Ejecución del backend

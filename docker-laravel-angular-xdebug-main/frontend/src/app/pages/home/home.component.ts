@@ -57,7 +57,7 @@ export class HomeComponent implements OnInit {
   private http = inject(HttpClient);
   private categoriaService = inject(CategoriaService);
   private productoService = inject(ProductoService);
-
+  private timeoutBusqueda: any;
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
   categorias: Categoria[] = [];
@@ -143,8 +143,12 @@ export class HomeComponent implements OnInit {
 }
 
   filtrarProductos(): void {
-    this.paginaActual = 1;
-    this.cargarProductos(1);
+    clearTimeout(this.timeoutBusqueda);
+
+    this.timeoutBusqueda = setTimeout(() => {
+      this.paginaActual = 1;
+      this.cargarProductos(1);
+    }, 500);
   }
 
   cambiarPagina(page: number): void {

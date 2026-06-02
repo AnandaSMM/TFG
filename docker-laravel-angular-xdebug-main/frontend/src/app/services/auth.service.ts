@@ -19,4 +19,12 @@ export class AuthService {
   logout() {
     return this.http.post(`${this.apiUrl}/logout`, {});
   }
+
+  getUser() {
+    return this.http.get('http://localhost:8000/api/user', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+  }
 }

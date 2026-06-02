@@ -118,7 +118,7 @@ export class CalendarioComponent implements OnInit {
     inicio.setHours(0, 0, 0, 0);
 
     const limite = new Date(inicio);
-    limite.setDate(limite.getDate() - 1);
+    limite.setDate(limite.getDate() - 2);
 
     return hoy <= limite;
   }

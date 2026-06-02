@@ -34,9 +34,11 @@ export class AlquilerComponent implements OnInit {
   error = '';
   mensaje = '';
   cargando = false;
+  enviandoAlquiler = false;
   precioAlquilerDia = 0;
   producto: any = null;
   reservasCalendario: any[] = [];
+  fechaMinima = '';
 
   calendarOptions: any = {
     plugins: [dayGridPlugin, interactionPlugin],
@@ -60,6 +62,12 @@ export class AlquilerComponent implements OnInit {
     events: [],
 
     selectAllow: (selectInfo: any) => {
+      const hoy = new Date(this.obtenerHoy() + 'T00:00:00');
+
+      if (selectInfo.start <= hoy) {
+        return false;
+      }
+
       return !this.reservasCalendario.some((reserva: any) => {
         const inicioReserva = new Date(reserva.start + 'T00:00:00');
         const finReserva = new Date(reserva.end + 'T00:00:00');
@@ -74,15 +82,43 @@ export class AlquilerComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.fechaMinima = this.obtenerHoy();
     this.productoId = Number(this.route.snapshot.paramMap.get('id'));
     this.cargarProducto();
     this.cargarReservasProducto();
   }
 
+  private obtenerHoy(): string {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    return this.formatearFecha(hoy);
+  }
+
+  private fechasValidas(): boolean {
+    this.error = '';
+    if (!this.fechaInicio || !this.fechaFin) {
+      this.error = 'Debes seleccionar fecha de inicio y fecha de fin';
+      return false;
+    }
+
+    const hoy = new Date(this.obtenerHoy() + 'T00:00:00');
+    const inicio = new Date(this.fechaInicio + 'T00:00:00');
+    const fin = new Date(this.fechaFin + 'T00:00:00');
+
+    if (inicio <= hoy) {
+      this.error = 'No puedes alquilar hoy ni en fechas pasadas';
+      return false;
+    }
+    if (fin < inicio) {
+      this.error = 'La fecha fin no puede ser anterior a la fecha inicio';
+      return false;
+    }
+    return true;
+  }
 
  cargarReservasProducto(): void {
     this.cargando = true;
-    this.alquilerService.listarReservados().subscribe({
+    this.alquilerService.listarReservasProducto(this.productoId).subscribe({
       next: (res: any) => {
         const reservas = res.reservas || [];
 
@@ -164,6 +200,15 @@ export class AlquilerComponent implements OnInit {
   }
 
   alquilarProducto(): void {
+    if (this.enviandoAlquiler) {
+      return;
+    }
+
+     if (!this.fechasValidas()) {
+      this.mensaje = '';
+      return;
+    }
+    
     const data = {
       fecha_inicio: this.fechaInicio,
       fecha_fin: this.fechaFin,
@@ -176,6 +221,7 @@ export class AlquilerComponent implements OnInit {
       next: () => {
         this.mensaje = 'Producto alquilado correctamente';
         this.error = '';
+        this.enviandoAlquiler = false;
 
         this.cargarReservasProducto(); 
 
@@ -197,8 +243,19 @@ export class AlquilerComponent implements OnInit {
 
       },
       error: (err) => {
-        this.error = err.error?.message || 'Error al alquilar';
+        const mensajeBack = err.error?.message || '';
+
+        if (
+          mensajeBack.includes('Demasiados emails') ||
+          mensajeBack.includes('emails por segundo')
+        ) {
+          this.error = 'Estás intentando alquilar demasiado rápido. Espera unos segundos y vuelve a intentarlo.';
+        } else {
+          this.error = mensajeBack || 'Error al alquilar';
+        }
+
         this.mensaje = '';
+        this.enviandoAlquiler = false;
       }
     });
     

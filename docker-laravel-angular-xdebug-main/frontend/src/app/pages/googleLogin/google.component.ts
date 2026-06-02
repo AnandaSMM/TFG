@@ -1,31 +1,42 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-google',
-  template: '<p>Iniciando sesión...</p>'
+  standalone: true,
+  template: `<p>Iniciando sesión...</p>`
 })
 export class GoogleComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+
     const token = this.route.snapshot.queryParamMap.get('token');
-    const user = this.route.snapshot.queryParamMap.get('user');
 
-    if (token) {
-      localStorage.setItem('token', token);
-
-      if (user) {
-        localStorage.setItem('user', user);
-      }
-
-      this.router.navigate(['/home']);
-    } else {
+    if (!token) {
       this.router.navigate(['/login']);
+      return;
     }
+
+    localStorage.setItem('token', token);
+
+    this.authService.getUser().subscribe({
+      next: (user: any) => {
+
+        localStorage.setItem('user', JSON.stringify(user));
+
+        this.router.navigate(['/home']);
+      },
+
+      error: () => {
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }

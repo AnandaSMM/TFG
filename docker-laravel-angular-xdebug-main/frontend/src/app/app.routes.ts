@@ -9,6 +9,7 @@ import { AlquilerComponent } from './pages/alquiler/alquiler.component';
 import { DevolucionComponent } from './pages/devolucion/devolucion.component';
 import { ChatComponent } from './pages/chat/chat.component';
 import { GoogleComponent } from './pages/googleLogin/google.component';
+import { PerfilUsuarioComponent } from "./pages/perfil-usuario/perfil-usuario.component";
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -21,5 +22,6 @@ export const routes: Routes = [
   { path: 'devolucion/:id', component: DevolucionComponent, canActivate: [authGuard] },
   { path: 'alquileres/:id/cancelar', component: CalendarioComponent, canActivate: [authGuard] },
   { path: 'chats', component: ChatComponent, canActivate: [authGuard] },
-  { path: 'auth/google/callback', component: GoogleComponent}
+  { path: 'auth/google/callback', component: GoogleComponent},
+  {path: 'perfil/:id',component: PerfilUsuarioComponent, canActivate: [authGuard]}
 ];

@@ -33,6 +33,7 @@ export class RegisterComponent {
     {
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      telefono:['',Validators.pattern(/^[0-9+\s()-]{6,20}$/)],
       password: ['', [Validators.required, Validators.minLength(6)]],
       password_confirmation: ['', Validators.required]
     },

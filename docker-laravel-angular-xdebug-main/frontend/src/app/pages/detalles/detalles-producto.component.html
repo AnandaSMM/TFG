@@ -75,10 +75,19 @@
               {{ producto.precio_alquiler_dia ? producto.precio_alquiler_dia + ' €/día' : 'No disponible' }}
             </p>
           </div>
-          <div class="col-12">
+          <div class="col-md-6">
             <h6 class="fw-bold mb-1 small">Localidad</h6>
             <p class="mb-0 small">
               {{ producto.localidad || 'Sin localidad' }}
+            </p>
+          </div>
+          <div class="col-md-6">
+            <h6 class="fw-bold mb-1 small">Disponible hoy</h6>
+            <p
+              class="mb-0 small fw-semibold"
+              [ngClass]="producto.disponible ? 'text-success' : 'text-danger'"
+            >
+              {{ producto.disponible ? 'Disponible' : 'No disponible' }}
             </p>
           </div>
         </div>
@@ -86,7 +95,6 @@
 
       <div class="modal-footer">
         <a
-          *ngIf="producto.disponible"
           [routerLink]="['/alquilar', producto.id]"
           class="btn btn-outline-primary"
         >

@@ -27,6 +27,16 @@ export class AlquilerService {
     );
   }
 
+  listarReservasProducto(productoId: number) {
+    const token = localStorage.getItem('token');
+    return this.http.get<any>(`${this.apiUrl}/productos/${productoId}/reservas`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json'
+      }
+    });
+  }
+
   listarReservados() {
     const token = localStorage.getItem('token');
     return this.http.get(`${this.apiUrl}/reservas`, {

@@ -124,10 +124,6 @@
     </span>
   </div>
 
-  <div *ngIf="cargando" class="state-message">
-    <p>Cargando productos...</p>
-  </div>
-
   <div *ngIf="error" class="state-message error-message">
     {{ error }}
   </div>
@@ -139,9 +135,14 @@
     No se encontraron productos
   </div>
 
+  <div *ngIf="cargando" class="floating-loader">
+    <div class="spinner-border text-primary"></div>
+  </div>
+
   <div
     class="products-grid"
-    *ngIf="!cargando && !error && productosFiltrados.length > 0"
+    *ngIf="!error && productosFiltrados.length > 0"
+    [class.loading-grid]="cargando"
   >
     <div
       class="product-card"
@@ -153,12 +154,14 @@
       <div class="product-image-wrapper">
         <img
           [src]="
-            producto.imagenes.length
+            producto.imagenes && producto.imagenes.length
               ? 'http://localhost:8000/storage/' + producto.imagenes[0].imagen
               : 'producto-placeholder.jpg'
           "
           class="product-image"
           alt="Imagen del producto"
+          loading="lazy"
+          decoding="async"
         />
       </div>
 

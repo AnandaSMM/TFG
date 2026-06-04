@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 
 export interface ImagenProducto {
   id: number;
@@ -17,7 +17,6 @@ export interface UsuarioProducto {
 export interface Producto {
   id: number;
   usuario_id: number;
-  nombreUser: string;
   usuario?: UsuarioProducto | null;
   nombre: string;
   descripcion: string | null;
@@ -37,29 +36,54 @@ export interface RespuestaProductosPaginados {
   total: number;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ProductoService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8000/api/productos';
+  private base = 'http://localhost:8000/api';
 
-  getProductos(page: number = 1, buscar: string = '', categorias: number[] = []) {
-    let url = `${this.apiUrl}?page=${page}&buscar=${encodeURIComponent(buscar)}`;
+  private get headers() {
+    return { Authorization: `Bearer ${localStorage.getItem('token')}` };
+  }
 
-    categorias.forEach((id) => {
-      url += `&categorias[]=${id}`;
-    });
-
+  getProductos(page = 1, buscar = '', categorias: number[] = []): Observable<any> {
+    let url = `${this.base}/productos?page=${page}&buscar=${encodeURIComponent(buscar)}`;
+    categorias.forEach(id => url += `&categorias[]=${id}`);
     return this.http.get<any>(url);
   }
-  
+
+  obtenerProducto(id: number): Observable<any> {
+    return this.http.get<any>(`${this.base}/productos/${id}`);
+  }
 
   obtenerProductoSimple(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}/simple`);
-  }
-  obtenerProducto(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
+    return this.http.get<any>(`${this.base}/productos/${id}/simple`);
   }
 
+  misProductos(): Observable<any> {
+    return this.http.get<any>(`${this.base}/mis-productos`, { headers: this.headers });
+  }
+
+  crearProducto(formData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.base}/productos`, formData, { headers: this.headers });
+  }
+
+  actualizarProducto(id: number, formData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.base}/productos/${id}/actualizar`, formData, { headers: this.headers });
+  }
+
+  eliminarProducto(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.base}/productos/${id}`, { headers: this.headers });
+  }
+
+  eliminarImagen(imagenId: number): Observable<any> {
+    return this.http.delete<any>(`${this.base}/imagenes/${imagenId}`, { headers: this.headers });
+  }
+
+  asignarCategorias(productoId: number, categorias: number[]): Observable<any> {
+    return this.http.post<any>(
+      `${this.base}/productos/${productoId}/categorias`,
+      { categorias },
+      { headers: this.headers }
+    );
+  }
 }

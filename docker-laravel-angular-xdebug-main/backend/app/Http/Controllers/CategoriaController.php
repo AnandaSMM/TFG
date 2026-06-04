@@ -36,9 +36,9 @@ class CategoriaController extends Controller
   public function asignarCategorias(Request $request, $productoId)
   {
       $request->validate([
-          'categorias' => 'required|array',
-          'categorias.*' => 'exists:categorias,id'
-      ]);
+            'categorias'   => 'present|array',
+            'categorias.*' => 'exists:categorias,id'
+        ]);
       $producto = Producto::find($productoId);
 
       if (!$producto) {

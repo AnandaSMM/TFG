@@ -130,7 +130,9 @@ class AlquilerController extends Controller
             ], 401);
         }
         $prestados = Alquiler::with([
-                'producto:id,usuario_id,nombre'
+                'producto:id,usuario_id,nombre',
+                'producto.imagenes',
+                'usuario:id,nombre'
             ])
             ->where('estado', 'activo')
             ->whereHas('producto', function ($query) use ($usuario) {

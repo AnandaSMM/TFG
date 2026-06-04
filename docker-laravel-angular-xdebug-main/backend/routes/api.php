@@ -52,3 +52,10 @@ Route::get('/instalaciones', [InstalacionController::class, 'index']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::middleware('auth:sanctum')->get('/mis-productos', [ProductoController::class, 'misProductos']);
+Route::middleware('auth:sanctum')->post('/productos', [ProductoController::class, 'crearProducto']);
+Route::middleware('auth:sanctum')->post('/productos/{id}/actualizar', [ProductoController::class, 'actualizarProducto']);
+Route::middleware('auth:sanctum')->delete('/productos/{id}', [ProductoController::class, 'eliminarProducto']);
+Route::middleware('auth:sanctum')->delete('/imagenes/{id}', [ProductoController::class, 'eliminarImagen']);

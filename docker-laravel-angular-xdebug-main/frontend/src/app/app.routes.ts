@@ -11,6 +11,7 @@ import { ChatComponent } from './pages/chat/chat.component';
 import { GoogleComponent } from './pages/googleLogin/google.component';
 import { PerfilUsuarioComponent } from "./pages/perfil-usuario/perfil-usuario.component";
 import { InstalacionesComponent } from './pages/instalaciones/instalaciones.component';
+import { MisProductosComponent } from './pages/mis-productos/mis-productos.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -25,5 +26,6 @@ export const routes: Routes = [
   { path: 'chats', component: ChatComponent, canActivate: [authGuard] },
   { path: 'auth/google/callback', component: GoogleComponent},
   { path: 'instalaciones', component: InstalacionesComponent, canActivate: [authGuard] },
+  { path: 'mis-productos', component: MisProductosComponent, canActivate: [authGuard] },
   {path: 'perfil/:id',component: PerfilUsuarioComponent, canActivate: [authGuard]}
 ];

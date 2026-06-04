@@ -20,7 +20,7 @@
           <div class="tarjeta-chat" (click)="seleccionarChat(chat)">
             
             <div class="avatar-container">
-              <img [src]="chat.foto ? chat.foto : 'assets/default-avatar.png'" alt="Avatar" class="avatar-img">
+              <img [src]="chat.foto ? 'http://localhost:8000/storage/' + chat.foto : 'assets/default-avatar.png'" alt="Avatar" class="avatar-img">
               <span class="estado-online"></span>
             </div>
 

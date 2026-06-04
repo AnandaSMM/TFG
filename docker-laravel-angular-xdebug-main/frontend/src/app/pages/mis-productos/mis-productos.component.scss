@@ -10,12 +10,12 @@
   align-items: flex-start;
   margin-bottom: 2rem;
 
-  h1 { font-size: 1.75rem; font-weight: 700; color: #1e3a5f; margin: 0 0 0.25rem; }
+  h1 { font-size: 1.75rem; font-weight: 700; color: #24439b; margin: 0 0 0.25rem; }
   p  { color: #6b7280; margin: 0; font-size: 0.9rem; }
 }
 
 .btn-agregar {
-  background: linear-gradient(135deg, #1e3a5f, #f97316);
+  background: linear-gradient(135deg, #24439b, #ff7a1a);  
   color: white;
   border: none;
   padding: 0.65rem 1.25rem;
@@ -37,12 +37,12 @@
 }
 
 .badge {
-  background: #1e3a5f;
+  background: #24439b;
   color: white;
   border-radius: 999px;
   padding: 0.15rem 0.6rem;
   font-size: 0.78rem;
-  &.naranja { background: #f97316; }
+  &.naranja { background: #ff7a1a; }
 }
 
 .seccion-prestados { margin-top: 3rem; }
@@ -86,9 +86,9 @@
   display: flex;
   flex-direction: column;
 
-  h3     { font-size: 0.95rem; font-weight: 700; color: #1e3a5f; margin: 0 0 0.25rem; }
+  h3     { font-size: 0.95rem; font-weight: 700; color: #24439b; margin: 0 0 0.25rem; }
   .desc  { font-size: 0.8rem; color: #6b7280; margin: 0 0 0.4rem; flex: 1; }
-  .precio { font-size: 1rem; font-weight: 700; color: #f97316; margin: 0.4rem 0 0.75rem; }
+  .precio { font-size: 1rem; font-weight: 700; color: #ff7a1a; margin: 0.4rem 0 0.75rem; }
 }
 
 .chips {
@@ -100,7 +100,7 @@
 
 .chip {
   background: #eff6ff;
-  color: #1e3a5f;
+  color: #24439b;
   border-radius: 999px;
   padding: 0.15rem 0.55rem;
   font-size: 0.7rem;
@@ -139,7 +139,7 @@
   background: #fff7ed;
   padding: 0.5rem;
   border-radius: 6px;
-  border-left: 3px solid #f97316;
+  border-left: 3px solid #ff7a1a;
 }
 
 .estado-msg {
@@ -162,7 +162,7 @@
   padding: 1rem;
 }
 
-.modal {
+.modal-new {
   background: white;
   border-radius: 12px;
   width: 100%;
@@ -180,7 +180,7 @@
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid #e5e7eb;
 
-  h2 { margin: 0; font-size: 1.05rem; font-weight: 700; color: #1e3a5f; }
+  h2 { margin: 0; font-size: 1.5rem; font-weight: 700; color: #24439b; }
   button { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #6b7280; &:hover { color: #111; } }
 }
 
@@ -209,7 +209,7 @@
     border: 1px solid #d1d5db;
     border-radius: 6px;
     font-size: 0.875rem;
-    &:focus { outline: 2px solid #1e3a5f; border-color: transparent; }
+    &:focus { outline: 2px solid #24439b; border-color: transparent; }
   }
 
   textarea { resize: vertical; }
@@ -323,7 +323,7 @@
   padding: 0.6rem 1.2rem;
   border: none;
   border-radius: 6px;
-  background: linear-gradient(135deg, #1e3a5f, #f97316);
+  background: linear-gradient(135deg, #24439b, #ff7a1a);  
   color: white;
   font-weight: 600;
   cursor: pointer;

@@ -62,7 +62,15 @@
 .hero-subtitle {
   font-size: 18px;
   font-weight: 500;
-  margin: 0 0 28px;
+  margin: 0 0 50px 0;
+
+}
+
+.hero-subtitle span {
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.08;
+  font-weight: 800;
+  color: #f97316;
 }
 
 .hero-buttons {

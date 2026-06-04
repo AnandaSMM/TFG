@@ -58,6 +58,7 @@ export class HomeComponent implements OnInit {
   private categoriaService = inject(CategoriaService);
   private productoService = inject(ProductoService);
   private timeoutBusqueda: any;
+  private apiUrl = 'http://localhost:8000/api/productos';
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
   categorias: Categoria[] = [];
@@ -71,7 +72,8 @@ export class HomeComponent implements OnInit {
   categoriasMenuAbierto = false; 
   productoSeleccionado: Producto | null = null;
   modalAbierto = false;
-  private apiUrl = 'http://localhost:8000/api/productos';
+  user = JSON.parse(localStorage.getItem('user') || '{Nombre no encontrado}');
+ 
 
   imagenActualPorProducto: { [productoId: number]: number } = {};
 

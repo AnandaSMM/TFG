@@ -75,7 +75,7 @@
 
 <!-- ── Modal ── -->
 <div class="overlay" *ngIf="modalAbierto" (click)="cerrarModal()">
-  <div class="modal" (click)="$event.stopPropagation()">
+  <div class="modal-new" (click)="$event.stopPropagation()">
 
     <div class="modal-header">
       <h2>{{ modoEdicion ? 'Editar producto' : 'Nuevo producto' }}</h2>

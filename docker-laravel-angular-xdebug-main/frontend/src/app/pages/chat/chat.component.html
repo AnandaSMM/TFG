@@ -54,7 +54,7 @@
   <main class="zona-conversacion">
     
     <div class="chat-activo-header">
-      <img [src]="chatSeleccionado.foto ? chatSeleccionado.foto : 'assets/default-avatar.png'" class="avatar-img">
+      <img [src]="chatSeleccionado.foto ? 'http://localhost:8000/storage/' + chatSeleccionado.foto : 'assets/default-avatar.png'" class="avatar-img">
       <h3>{{ chatSeleccionado.nombre }}</h3>
     </div>
 

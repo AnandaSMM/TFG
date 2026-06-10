@@ -1,0 +1,64 @@
+<div class="instalaciones-layout">
+
+  <!-- Mapa -->
+  <div class="mapa-wrapper">
+    <div *ngIf="cargando" class="mapa-loading">Cargando instalaciones...</div>
+    <div *ngIf="error" class="mapa-error">{{ error }}</div>
+    <div id="mapa-instalaciones"></div>
+  </div>
+
+  <!-- Panel lateral -->
+  <div class="panel-lateral">
+
+    <div *ngIf="!instalacionSeleccionada" class="panel-vacio">
+      <div class="panel-vacio-icono">📍</div>
+      <p>Selecciona un centro en el mapa para ver más información</p>
+    </div>
+
+    <div *ngIf="instalacionSeleccionada" class="panel-info">
+        <h2>{{ instalacionSeleccionada.nombre }}</h2>
+
+        <div class="info-fila">
+            <span class="info-label">📍 Dirección</span>
+            <span>{{ instalacionSeleccionada.ubicacion }}</span>
+        </div>
+
+        <div class="info-fila" *ngIf="instalacionSeleccionada.tipo">
+            <span class="info-label">🏋️ Tipo</span>
+            <span>{{ instalacionSeleccionada.tipo === 'fitness_centre' ? 'Centro de fitness' : 'Centro deportivo' }}</span>
+        </div>
+
+        <div class="info-fila" *ngIf="instalacionSeleccionada.deporte">
+            <span class="info-label">⚽ Deportes</span>
+            <span>{{ instalacionSeleccionada.deporte }}</span>
+        </div>
+
+        <div class="info-fila" *ngIf="instalacionSeleccionada.horario">
+            <span class="info-label">🕐 Horario</span>
+            <span>{{ instalacionSeleccionada.horario }}</span>
+        </div>
+
+        <div class="info-fila" *ngIf="instalacionSeleccionada.telefono">
+            <span class="info-label">📞 Teléfono</span>
+            <span>{{ instalacionSeleccionada.telefono }}</span>
+        </div>
+
+        <div class="info-fila" *ngIf="instalacionSeleccionada.operador">
+            <span class="info-label">🏢 Operador</span>
+            <span>{{ instalacionSeleccionada.operador }}</span>
+        </div>
+
+        <div class="info-fila" *ngIf="instalacionSeleccionada.web">
+            <span class="info-label">🌐 Web</span>
+            <a [href]="instalacionSeleccionada.web" target="_blank" rel="noopener">
+            {{ instalacionSeleccionada.web }}
+            </a>
+        </div>
+
+        <button class="btn-cerrar" (click)="instalacionSeleccionada = null">
+            Cerrar
+        </button>
+    </div>
+
+  </div>
+</div>

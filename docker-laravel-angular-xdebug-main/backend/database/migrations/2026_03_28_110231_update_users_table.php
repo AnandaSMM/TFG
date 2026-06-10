@@ -7,7 +7,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+<<<<<<< HEAD
         Schema::table('users', function (Blueprint $table) {
+=======
+        Schema::table('usuarios', function (Blueprint $table) {
+>>>>>>> develop
             $table->renameColumn('name', 'nombre');
             $table->string('telefono', 20)->nullable()->after('email');
             $table->string('foto', 250)->nullable()->after('telefono');
@@ -16,7 +20,11 @@ return new class extends Migration
 
     public function down(): void
     {
+<<<<<<< HEAD
         Schema::table('users', function (Blueprint $table) {
+=======
+        Schema::table('usuarios', function (Blueprint $table) {
+>>>>>>> develop
             $table->renameColumn('nombre', 'name');
             $table->dropColumn(['telefono', 'foto']);
         });

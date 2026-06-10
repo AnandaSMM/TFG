@@ -1,0 +1,114 @@
+.instalaciones-layout {
+  display: flex;
+  height: calc(100vh - 60px); // ajusta 60px al alto de tu navbar
+  overflow: hidden;
+}
+
+.mapa-wrapper {
+  flex: 1;
+  position: relative;
+
+  #mapa-instalaciones {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.mapa-loading,
+.mapa-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background: white;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.mapa-error {
+  color: #dc3545;
+}
+
+.panel-lateral {
+  width: 320px;
+  min-width: 280px;
+  background: white;
+  border-left: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.panel-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 2rem;
+  text-align: center;
+  color: #9ca3af;
+
+  .panel-vacio-icono {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+}
+
+.panel-info {
+  padding: 1.5rem;
+
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin-bottom: 1.25rem;
+  }
+}
+
+.info-fila {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+
+  .info-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  span, a {
+    font-size: 0.9rem;
+    color: #374151;
+  }
+
+  a {
+    color: #f97316;
+    word-break: break-all;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.btn-cerrar {
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: white;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 0.875rem;
+  &:hover { background: #f9fafb; }
+}

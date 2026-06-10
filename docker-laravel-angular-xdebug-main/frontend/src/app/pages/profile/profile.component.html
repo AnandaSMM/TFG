@@ -1,0 +1,487 @@
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  .profile-page {
+    padding: 24px;
+    background: #f4f6fb;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .page-header {
+    margin-bottom: 24px;
+  }
+
+  .page-header h1 {
+    color: #24439b;
+    font-size: 34px;
+    margin-bottom: 5px;
+    font-weight: 700;
+  }
+
+  .page-header p {
+    color: #7a7a7a;
+    font-size: 15px;
+  }
+
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  /* USER CARD */
+
+  .user-card {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .avatar-wrapper {
+    position: relative;
+    width: fit-content;
+    margin: auto auto 18px;
+  }
+
+  .avatar {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 5px solid #24439b;
+    object-fit: cover;
+  }
+
+  .camera-btn {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #24439b, #ff7a1a);
+    color: white;
+    cursor: pointer;
+  }
+
+  .user-card h2 {
+    margin: 10px 0 6px;
+    color: #1f2d3d;
+    font-size: 28px;
+  }
+
+  .member-date {
+    color: #888;
+    font-size: 14px;
+  }
+
+  .rating {
+    margin: 18px 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ff8a00;
+  }
+
+  .rating span {
+    color: #777;
+    font-weight: normal;
+    font-size: 14px;
+  }
+
+  .edit-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #24439b, #ff7a1a);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* INFO CARD */
+
+  .info-card h3 {
+    color: #24439b;
+    margin-bottom: 20px;
+  }
+
+  .info-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+  }
+
+  .info-group label {
+    margin-bottom: 6px;
+    color: #555;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .info-group input {
+    height: 45px;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    padding: 0 14px;
+    font-size: 15px;
+    outline: none;
+  }
+
+  .info-group input:focus {
+    border-color: #24439b;
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column; 
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .actions button {
+    width: 100%;   
+    height: 48px;           
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .actions button:hover {
+    opacity: 0.9;
+  }
+
+  .back-btn {
+    background: linear-gradient(90deg, #24439b, #ff7a1a);
+  }
+
+  .delete-btn {
+    background: #ff7a1a; 
+  }
+  .cancelar-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #9aa3b2; /* Gris azulado que combina con tu fondo */
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* RIGHT SIDE */
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    border-radius: 14px;
+    padding: 24px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .stat-card .number {
+    font-size: 34px;
+    font-weight: bold;
+  }
+
+  .stat-card .label {
+    font-size: 15px;
+  }
+
+  .blue {
+    background: #244bc5;
+  }
+
+  .orange {
+    background: #ff7a1a;
+  }
+
+  .green {
+    background: #1fc98a;
+  }
+
+  .purple {
+    background: #8f63ff;
+  }
+
+  /* PRODUCTS */
+
+  .card-header {
+    margin-bottom: 22px;
+  }
+
+  .card-header h3 {
+    color: #24439b;
+    margin-bottom: 8px;
+  }
+
+  .card-header p {
+    color: #777;
+    font-size: 14px;
+  }
+
+  .product-item {
+    background: #f7f8fc;
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .product-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .product-left h4 {
+    margin: 0;
+    color: #24439b;
+  }
+
+  .product-left span {
+    color: #777;
+    font-size: 14px;
+  }
+
+  .rank {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+
+  .orange-bg {
+    background: #ff7a1a;
+  }
+
+  .blue-bg {
+    background: #244bc5;
+  }
+
+  .gray-bg {
+    background: #9aa3b2;
+  }
+
+  .top-badge {
+    background: linear-gradient(90deg, #24439b, #ff7a1a);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    .profile-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="profile-page">
+
+  <div class="page-header">
+    <h1>Mi Cuenta</h1>
+    <p>Gestiona tu información personal y revisa tus estadísticas</p>
+  </div>
+
+  <div class="profile-grid">
+
+    <!-- LEFT -->
+    <div>
+
+      <div class="card user-card">
+
+        <div class="avatar-wrapper">
+          <img
+            [src]="getFotoPerfil()"
+            alt="avatar"
+            class="avatar"
+          />
+
+          <button class="camera-btn" (click)="fotoInput.click()">
+            📷
+          </button>
+          <input
+            #fotoInput
+            type="file"
+            style="display: none"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+          />
+        </div>
+
+        <h2>{{ userData.nombre }}</h2>
+
+        <span class="member-date">
+          <!-- <strong>{{ userData.fechaRegistro | date:'dd/MM/yyyy' }}</strong> -->
+        </span>
+
+        <button class="edit-btn" (click)="activarEdicion()"  *ngIf="!editando">
+          Editar Perfil
+        </button>
+
+        <button class="cancelar-btn" (click)="activarEdicion()"  *ngIf="editando">
+          Cancelar Edición
+        </button>
+
+      </div>
+
+      <!-- INFO -->
+      <div class="card info-card">
+
+        <h3>Información Personal</h3>
+
+        <div class="info-group">
+          <label>Nombre completo</label>
+
+          <input *ngIf="editando" type="text" [(ngModel)]="userData.nombre" />
+    
+          <p *ngIf="!editando">{{ userData.nombre }}</p>
+        </div>
+
+        <div class="info-group">
+          <label>Email</label>
+
+          <input *ngIf="editando" type="email" [(ngModel)]="userData.email" />
+          <p *ngIf="!editando">{{ userData.email }}</p>
+
+        </div>
+
+        <div class="info-group">
+          <label>Teléfono</label>
+
+          <input *ngIf="editando" type="text" [(ngModel)]="userData.telefono" />
+          <p *ngIf="!editando">{{ userData.telefono || 'No proporcionado' }}</p>
+        </div>
+
+        <div class="info-group">
+          <label>Contraseña</label>
+
+          <input *ngIf="editando" type="text" [(ngModel)]="userData.password" placeholder="Nueva Contraseña" />
+          <p *ngIf="!editando">*********</p>
+        </div>
+
+        <div class="actions">
+
+          <button *ngIf="editando" class="back-btn" (click)="saveProfile()">
+            Guardar Cambios
+          </button>
+
+          <button *ngIf="editando" class="delete-btn" (click)="deleteAccount()">
+            Eliminar Cuenta
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div>
+
+      <!-- STATS -->
+      <div class="stats-grid" >
+
+        <div class="stat-card blue">
+          <span class="number">{{ alquileresTotales }}</span>
+          <span class="label">Alquileres Totales</span>
+        </div>
+
+        <div class="stat-card orange">
+          <span class="number">{{ alquileresActivos }}</span>
+          <span class="label">Alquileres Activos</span>
+        </div>
+
+        <div class="stat-card green">
+          <span class="number">{{ ingresosTotales }} €</span>
+          <span class="label">Ingresos Totales</span>
+        </div>
+         <!-- PRODUCTS 
+          <div class="stat-card purple">
+            <span class="number">4.8</span>
+            <span class="label">Valoración Media</span>
+          </div>
+        -->
+      </div>
+
+      <!-- PRODUCTS -->
+      <div class="card">
+
+        <div class="card-header">
+          <h3>Productos mas alquilados</h3>
+          <p>Los productos que más han alquilado de ti</p>
+        </div>
+        <div *ngIf="productosmasAlquilados.length === 0" class="product-item" style="justify-content: center; color: gray;">
+          Aún no tienes estadísticas de alquileres.
+        </div>
+        
+
+        <div *ngFor="let prod of productosmasAlquilados; let i = index" class="product-item">
+
+        <div class="product-left">
+
+          <div class="rank" [ngClass]="{
+            'orange-bg': i === 0,
+            'blue-bg': i === 1,
+            'gray-bg': i === 2
+          }">
+            {{ i + 1 }}
+          </div>
+
+          <div>
+            <h4>{{ prod.nombre }}</h4>
+            <span>{{ prod.alquileres_count }} {{ prod.alquileres_count === 1 ? 'alquiler' : 'alquileres' }}</span>
+          </div>
+
+        </div>
+
+        <div class="top-badge">
+          Top {{ i + 1 }}
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>

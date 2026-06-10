@@ -1,0 +1,350 @@
+<div class="pantalla-chat">
+  
+  <aside class="sidebar-chats">
+    
+    <div class="sidebar-header">
+      <h2>Mensajes</h2>
+      <!--
+      <div class="buscador-container">
+        <span class="icono-buscar">🔍</span>
+        <input type="text" placeholder="Buscar conversaciones...">
+      </div>
+      -->
+    </div>
+
+    <div class="lista-chats">
+      @if (misConversaciones.length === 0) {
+        <p class="sin-chats">No tienes ninguna conversación abierta todavía.</p>
+      } @else {
+        @for (chat of misConversaciones; track chat.otro_usuario_id) {
+          <div class="tarjeta-chat" (click)="seleccionarChat(chat)">
+            
+            <div class="avatar-container">
+              <img [src]="chat.foto ? storareUrl + '/' + chat.foto : 'assets/default-avatar.png'" alt="Avatar" class="avatar-img">
+              <span class="estado-online"></span>
+            </div>
+
+            <div class="chat-info">
+              <div class="chat-info-superior">
+                <span class="chat-nombre">{{ chat.nombre }}</span>
+                <span class="chat-fecha">{{chat.fecha}}</span> 
+              </div>
+              
+              <div class="chat-info-inferior">
+                <p class="chat-ultimo-mensaje">{{ chat.ultimo_mensaje }}</p>
+                
+                @if (chat.no_leido > 0) {
+                    <span class="burbuja-no-leidos">{{ chat.no_leido }}</span>
+                }
+              </div>
+            </div>
+
+          </div>
+        }
+      }
+    </div>
+
+  </aside>
+
+  @if (!chatSeleccionado) {
+  <main class="vista-mensajes-vacia">
+    <p>Selecciona una conversación para empezar a chatear</p>
+  </main>
+} @else {
+  <main class="zona-conversacion">
+    
+    <div class="chat-activo-header">
+      <img [src]="chatSeleccionado.foto ? storareUrl + '/' + chatSeleccionado.foto : 'assets/default-avatar.png'" class="avatar-img">
+      <h3>{{ chatSeleccionado.nombre }}</h3>
+    </div>
+
+    <div class="cuerpo-mensajes">
+      @for (msg of mensajesChatActivo; track msg.id) {
+        <div class="mensaje-burbuja" [ngClass]="{'enviado': msg.emisor_id === miId, 'recibido': msg.emisor_id !== miId}">
+          <p class="texto-msg">{{ msg.mensaje }}</p>
+          <span class="hora-msg">{{ msg.fecha | date:'HH:mm' }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="chat-activo-footer">
+      <input 
+        type="text" 
+        [(ngModel)]="nuevoMensaje" 
+        (keyup.enter)="enviarMensaje()" 
+        placeholder="Escribe tu mensaje..."
+      >
+      <button class="btn-enviar" (click)="enviarMensaje()">Enviar</button>
+    </div>
+
+  </main>
+}
+
+</div>
+
+<style>
+  /* Contenedor principal que ocupa toda la pantalla */
+  .pantalla-chat {
+    display: flex;
+    height: calc(100vh - 70px); /* Ajusta este número según el grosor de vuestro Navbar */
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+  }
+
+  /* --- SIDEBAR IZQUIERDA --- */
+  .sidebar-chats {
+    width: 350px;
+    background-color: #ffffff;
+    border-right: 1px solid #e9ecef;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-header {
+    padding: 20px;
+  }
+
+  .sidebar-header h2 {
+    margin: 0 0 15px 0;
+    color: #1e3a8a; /* Azul corporativo oscuro */
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  /* Buscador redondeado igual al de tu maqueta */
+  .buscador-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .icono-buscar {
+    position: absolute;
+    left: 15px;
+    color: #9ca3af;
+    font-size: 14px;
+  }
+
+  .buscador-container input {
+    width: 100%;
+    padding: 10px 15px 10px 40px;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    background-color: #f9fafb;
+    font-size: 14px;
+    outline: none;
+  }
+
+  /* Lista deslizable de chats */
+  .lista-chats {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .sin-chats {
+    text-align: center;
+    padding: 20px;
+    color: #6b7280;
+  }
+
+  /* Tarjeta individual de cada conversación */
+  .tarjeta-chat {
+    display: flex;
+    padding: 15px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s;
+    align-items: center;
+  }
+
+  .tarjeta-chat:hover {
+    background-color: #f3f8ff; /* Sutil tono azul al pasar el ratón */
+  }
+
+  /* Foto de perfil redonda con el puntito verde online */
+  .avatar-container {
+    position: relative;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+  }
+
+  .avatar-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .estado-online {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 10px;
+    height: 10px;
+    background-color: #10b981; /* Verde online */
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+  }
+
+  /* Bloque de texto informativo */
+  .chat-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .chat-info-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+
+  .chat-nombre {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 15px;
+  }
+
+  .chat-fecha {
+    font-size: 12px;
+    color: #9ca3af;
+  }
+
+  .chat-info-inferior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .chat-ultimo-mensaje {
+    margin: 0;
+    font-size: 13px;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 10px;
+    flex: 1;
+  }
+
+  /* La burbuja roja de mensajes pendientes */
+  .burbuja-no-leidos {
+    background-color: #ef4444;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 7px;
+    border-radius: 10px;
+    min-width: 15px;
+    text-align: center;
+  }
+
+
+  .vista-mensajes-vacia {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f3f4f6;
+    color: #9ca3af;
+    font-size: 16px;
+  }
+  /* Contenedor principal de la derecha */
+    .zona-conversacion {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #f0f2f5; /* Gris claro de fondo de chat */
+    }
+
+    /* Cabecera del chat activo */
+    .chat-activo-header {
+    padding: 15px 20px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    }
+    .chat-activo-header h3 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 16px;
+    }
+
+    /* Zona central deslizable con los mensajes */
+    .cuerpo-mensajes {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    }
+
+    /* Estilo base de las burbujas */
+    .mensaje-burbuja {
+    max-width: 60%;
+    padding: 8px 14px;
+    border-radius: 12px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    word-wrap: break-word;
+    }
+    .texto-msg {
+    margin: 0;
+    font-size: 14px;
+    }
+    .hora-msg {
+    font-size: 10px;
+    color: #6b7280;
+    align-self: flex-end;
+    margin-top: 4px;
+    }
+
+    /* Mensajes enviados por MI (Derecha y color verde/azul) */
+    .mensaje-burbuja.enviado {
+    background-color: #d9fdd3; /* Verde WhatsApp */
+    align-self: flex-end;
+    border-top-right-radius: 0px;
+    }
+
+    /* Mensajes recibidos del OTRO (Izquierda y color blanco) */
+    .mensaje-burbuja.recibido {
+    background-color: #ffffff;
+    align-self: flex-start;
+    border-top-left-radius: 0px;
+    }
+
+    /* Barra inferior para escribir */
+    .chat-activo-footer {
+    padding: 15px 20px;
+    background-color: #ffffff;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    }
+    .chat-activo-footer input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 25px;
+    outline: none;
+    font-size: 14px;
+    }
+    .btn-enviar {
+    background-color: #1e3a8a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    }
+    .btn-enviar:hover {
+    background-color: #1d4ed8;
+    }
+</style>

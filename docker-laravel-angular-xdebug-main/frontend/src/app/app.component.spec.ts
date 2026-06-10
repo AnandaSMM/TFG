@@ -13,6 +13,7 @@ describe('AppComponent', () => {
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
   });
+<<<<<<< HEAD
 
   it(`should have the 'frontend' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
@@ -27,3 +28,6 @@ describe('AppComponent', () => {
     expect(compiled.querySelector('h1')?.textContent).toContain('Hello, frontend');
   });
 });
+=======
+});
+>>>>>>> develop

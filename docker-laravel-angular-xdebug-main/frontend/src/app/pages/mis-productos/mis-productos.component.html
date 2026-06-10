@@ -1,0 +1,175 @@
+<div class="mis-productos-container">
+
+  <div class="cabecera">
+    <div>
+      <h1>Mis Productos</h1>
+      <p>Gestiona tus productos y ve cuáles están prestados</p>
+    </div>
+    <button class="btn-agregar" (click)="abrirModalCrear()">+ Agregar Producto</button>
+  </div>
+
+  <div *ngIf="cargando" class="estado-msg">Cargando productos...</div>
+  <div *ngIf="error"    class="estado-msg error">{{ error }}</div>
+
+  <!-- Mis productos -->
+  <section *ngIf="!cargando">
+    <h2 class="seccion-titulo">
+      📦 Mis Productos Disponibles
+      <span class="badge">{{ misProductos.length }}</span>
+    </h2>
+
+    <p *ngIf="misProductos.length === 0" class="estado-msg">
+      No tienes productos publicados aún.
+    </p>
+
+    <div class="grid">
+      <div class="tarjeta" *ngFor="let p of misProductos">
+        <div class="tarjeta-img">
+          <img [src]="getPrimeraImagen(p)" [alt]="p.nombre" />
+          <span class="badge-estado" [class.no-disponible]="!p.disponible">
+            {{ p.disponible ? 'Disponible' : 'No disponible' }}
+          </span>
+        </div>
+        <div class="tarjeta-body">
+          <h3>{{ p.nombre }}</h3>
+          <p class="desc">{{ p.descripcion }}</p>
+          <div class="chips" *ngIf="p.categorias?.length > 0">
+            <span class="chip" *ngFor="let c of p.categorias">{{ c.nombre }}</span>
+          </div>
+          <p class="precio">{{ p.precio_alquiler_dia }}€/día</p>
+          <div class="acciones">
+            <button class="btn-editar"   (click)="abrirModalEditar(p)">✏️ Editar</button>
+            <button class="btn-eliminar" (click)="eliminar(p.id)">🗑️</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prestados -->
+  <section *ngIf="!cargando && productosPrestados.length > 0" class="seccion-prestados">
+    <h2 class="seccion-titulo">
+      👤 Productos Prestados
+      <span class="badge naranja">{{ productosPrestados.length }}</span>
+    </h2>
+
+    <div class="grid">
+      <div class="tarjeta" *ngFor="let a of productosPrestados">
+        <div class="tarjeta-img">
+          <img [src]="getPrimeraImagen(a.producto)" [alt]="a.producto?.nombre" />
+          <span class="badge-estado no-disponible">Alquilado</span>
+        </div>
+        <div class="tarjeta-body">
+          <h3>{{ a.producto?.nombre }}</h3>
+          <div class="info-alquiler">
+            <span>👤 {{ a.usuario?.nombre || 'Usuario' }}</span>
+            <span>🕐 Devolución: {{ a.fecha_fin | date:'d/M/yyyy' }}</span>
+          </div>
+          <p class="precio">{{ a.precio_total }}€ total</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ── Modal ── -->
+<div class="overlay" *ngIf="modalAbierto" (click)="cerrarModal()">
+  <div class="modal-new" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <h2>{{ modoEdicion ? 'Editar producto' : 'Nuevo producto' }}</h2>
+      <button (click)="cerrarModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="campo">
+        <label>Nombre *</label>
+        <input type="text" [(ngModel)]="form.nombre" placeholder="Ej: Raqueta de tenis" />
+      </div>
+
+      <div class="campo">
+        <label>Descripción</label>
+        <textarea [(ngModel)]="form.descripcion" rows="3" placeholder="Describe el producto..."></textarea>
+      </div>
+
+      <div class="fila">
+        <div class="campo">
+          <label>Precio/día (€) *</label>
+          <input type="number" [(ngModel)]="form.precio_alquiler_dia" min="0" step="0.5" />
+        </div>
+        <div class="campo">
+          <label>Precio venta (€)</label>
+          <input type="number" [(ngModel)]="form.precio_venta" min="0" step="1" />
+        </div>
+      </div>
+
+      <div class="campo">
+        <label>Localidad *</label>
+        <input type="text" [(ngModel)]="form.localidad" placeholder="Ej: Madrid" />
+      </div>
+
+      <div class="campo campo-check">
+        <input type="checkbox" id="disponible" [(ngModel)]="form.disponible" />
+        <label for="disponible">Disponible para alquiler</label>
+      </div>
+
+      <!-- Categorías -->
+      <div class="campo">
+        <label>Categorías <small>(opcional)</small></label>
+        <div class="cats-selector">
+          <div
+            class="cat-chip"
+            *ngFor="let cat of categorias"
+            [class.sel]="estaCategoriaSel(cat.id)"
+            (click)="toggleCategoria(cat.id)"
+          >
+            {{ cat.nombre }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Imágenes actuales (solo edición) -->
+      <div class="campo" *ngIf="modoEdicion && imagenesActuales.length > 0">
+        <label>Imágenes actuales <small>— clic en ✕ para marcar como eliminar</small></label>
+        <div class="imgs-actuales">
+          <div
+            class="img-wrap"
+            *ngFor="let img of imagenesActuales"
+            [class.marcada]="estaImagenMarcada(img.id)"
+          >
+            <img [src]="getImagenUrl(img.imagen)" alt="imagen" />
+            <button class="btn-x" (click)="toggleEliminarImagen(img.id)" type="button">
+              {{ estaImagenMarcada(img.id) ? '↩' : '✕' }}
+            </button>
+          </div>
+        </div>
+        <small class="aviso-eliminar" *ngIf="imagenesAEliminar.length > 0">
+          {{ imagenesAEliminar.length }} imagen(es) se eliminarán al guardar
+        </small>
+      </div>
+
+      <!-- Añadir imágenes nuevas -->
+      <div class="campo">
+        <label>{{ modoEdicion ? 'Añadir imágenes nuevas' : 'Imágenes' }}</label>
+        <input type="file" multiple accept="image/*" (change)="onImagenesSeleccionadas($event)" />
+        <div class="previews" *ngIf="imagenesNuevasPreview.length > 0">
+          <img *ngFor="let src of imagenesNuevasPreview" [src]="src" />
+        </div>
+      </div>
+
+      <p class="msg-ok"    *ngIf="mensajeForm">{{ mensajeForm }}</p>
+      <p class="msg-error" *ngIf="errorForm">{{ errorForm }}</p>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-guardar" (click)="guardar()" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : (modoEdicion ? 'Guardar cambios' : 'Crear producto') }}
+      </button>
+    </div>
+
+  </div>
+</div>

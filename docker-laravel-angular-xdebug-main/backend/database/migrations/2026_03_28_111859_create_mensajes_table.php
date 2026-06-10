@@ -14,8 +14,13 @@ return new class extends Migration
         Schema::create('mensajes', function (Blueprint $table) {
             $table->id();
 
+<<<<<<< HEAD
             $table->foreignId('emisor_id')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('receptor_id')->nullable()->constrained('users')->nullOnDelete();
+=======
+            $table->foreignId('emisor_id')->nullable()->constrained('usuarios')->nullOnDelete();
+            $table->foreignId('receptor_id')->nullable()->constrained('usuarios')->nullOnDelete();
+>>>>>>> develop
 
             $table->text('mensaje');
             $table->boolean('leido')->default(false);

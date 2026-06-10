@@ -1,0 +1,57 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-header">
+      <h2>Bienvenido</h2>
+      <p>Inicia sesión para continuar</p>
+    </div>
+
+    <button (click)="loginWithGoogle()" class="google-button">
+      <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+      Continuar con Google
+    </button>
+
+    <div class="divider">
+      <span>o entra con tu correo</span>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <input type="email" formControlName="email" placeholder="ejemplo@correo.com" required>
+        <div class="login-error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')">
+          El correo es obligatorio
+        </div>
+
+        <div class="login-error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('email')">
+          Introduce un correo válido
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" formControlName="password" placeholder="********" required>
+         <div class="login-error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')">
+          La contraseña es obligatoria
+        </div>
+
+        <div class="login-error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('minlength')">
+          La contraseña debe tener al menos 8 caracteres
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage" class="login-error">
+        {{ errorMessage }}
+      </div>
+
+      <button type="submit" class="login-button" [disabled]="loading">
+        <span *ngIf="!loading">Entrar</span>
+        <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
+      </button>
+    </form>
+
+    <p class="register-text">
+      ¿No tienes cuenta?
+      <a routerLink="/register">Regístrate</a>
+    </p>
+  </div>
+</div>

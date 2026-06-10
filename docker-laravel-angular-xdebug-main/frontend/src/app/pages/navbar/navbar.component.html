@@ -1,0 +1,123 @@
+<nav class="navbar-custom">
+  <div class="navbar-content">
+
+    <!-- LOGO -->
+    <div class="nav-logo">
+      <h2>Rent2play</h2>
+    </div>
+
+    <!-- BOTÓN MÓVIL -->
+    <button
+      class="menu-toggle"
+      type="button"
+      (click)="menuAbierto = !menuAbierto"
+      *ngIf="!ocultarBotones"
+      aria-label="Abrir menú"
+    >
+      ☰
+    </button>
+
+    <!-- MENÚ -->
+    <ul
+      class="menu"
+      [class.menu-open]="menuAbierto"
+      *ngIf="!ocultarBotones"
+    >
+
+      <!-- LINKS -->
+      <div class="menu-links">
+
+        <li>
+          <a
+            routerLink="/home"
+            (click)="menuAbierto = false"
+          >
+            Inicio
+          </a>
+        </li>
+
+        <li>
+          <a routerLink="/instalaciones" (click)="menuAbierto = false">
+            Instalaciones
+          </a>
+        </li>
+
+        <li>
+          <a
+            routerLink="/calendar"
+            (click)="menuAbierto = false"
+          >
+            Calendario
+          </a>
+        </li>
+
+        <li>
+          <a routerLink="/mis-productos" (click)="menuAbierto = false">
+            Mis productos
+          </a>
+        </li>
+
+        <li>
+          <a
+            routerLink="/profile"
+            (click)="menuAbierto = false"
+          >
+            Mi cuenta
+          </a>
+        </li>
+
+      </div>
+
+      <!-- ICONOS -->
+      <div class="menu-actions">
+
+        <!-- MENSAJES -->
+
+        <div class="tooltip-wrapper">
+
+          <button
+            class="nav-icon-button"
+            type="button"
+            (click)="toggleChat()"
+          >
+            <img
+              src="/mensajes.svg"
+              alt="Mensajes"
+            >
+
+            <span class="badge">
+              <!--  LAS NOTIS AKI -->
+            </span>
+          </button>
+
+          <span class="custom-tooltip">
+            Mensajes
+          </span>
+
+        </div>
+
+        <!-- LOGOUT -->
+
+        <div class="tooltip-wrapper">
+
+          <button
+            class="nav-icon-button"
+            type="button"
+            (click)="logout()"
+          >
+            <img
+              src="/logoutt.svg"
+              alt="Cerrar sesión"
+            >
+          </button>
+
+          <span class="custom-tooltip">
+            Cerrar sesión
+          </span>
+
+        </div>
+
+      </div>
+    </ul>
+  </div>
+</nav>

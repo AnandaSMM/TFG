@@ -1,0 +1,129 @@
+<div class="register-page">
+  <div class="register-card">
+
+    <div class="register-header">
+      <h2>Crear cuenta</h2>
+      <p>Únete a Rent2play y empieza a alquilar</p>
+    </div>
+
+    <div class="divider">
+      <span>Regístrate con tu correo</span>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+      <div class="form-group">
+        <label>Nombre completo</label>
+
+        <input
+          type="text"
+          formControlName="nombre"
+          placeholder="Juan Pérez"
+          required min="3"
+        >
+        <div
+          class="register-error"
+          *ngIf="registerForm.get('nombre')?.touched && registerForm.get('nombre')?.hasError('required')"
+        >
+          El nombre es obligatorio
+        </div>
+        <div
+          class="register-error"
+          *ngIf="registerForm.get('nombre')?.touched && registerForm.get('nombre')?.hasError('minlength')"
+        >
+          El nombre debe tener al menos 3 caracteres
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Correo electrónico</label>
+
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="ejemplo@correo.com"
+          required
+        >
+        <div class="register-error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('required')">
+          El correo es obligatorio
+        </div>
+
+        <div class="register-error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('email')">
+          Introduce un correo válido
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Teléfono</label>
+
+        <input
+          type="text"
+          formControlName="telefono"
+          placeholder="+34 600 000 000"
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+
+        <input
+          type="password"
+          formControlName="password"
+          placeholder="********"
+          required
+        >
+        <div class="register-error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.hasError('required')">
+          La contraseña es obligatoria
+        </div>
+
+        <div class="register-error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.hasError('minlength')">
+          La contraseña debe tener al menos 8 caracteres
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Confirmar contraseña</label>
+
+        <input
+          type="password"
+          formControlName="password_confirmation"
+          placeholder="********"
+          required
+        >
+        <div class="register-error" *ngIf="registerForm.get('password_confirmation')?.touched && registerForm.get('password_confirmation')?.hasError('required')">
+          Confirma la contraseña
+        </div>
+
+        <div class="register-error" *ngIf="registerForm.touched && registerForm.hasError('passwordsMismatch')">
+          Las contraseñas no coinciden
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage" class="register-error">
+        {{ errorMessage }}
+      </div>
+
+      <button
+        type="submit"
+        class="register-button"
+        [disabled]="loading"
+      >
+        <span >Crear cuenta</span>
+
+        <span
+          *ngIf="loading"
+          class="spinner-border spinner-border-sm"
+        ></span>
+      </button>
+    </form>
+
+    <p class="login-text">
+      ¿Ya tienes cuenta?
+
+      <a routerLink="/login">
+        Inicia sesión
+      </a>
+    </p>
+
+  </div>
+</div>

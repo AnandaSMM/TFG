@@ -14,7 +14,11 @@ return new class extends Migration
         Schema::create('alquileres', function (Blueprint $table) {
             $table->id();
 
+<<<<<<< HEAD
             $table->foreignId('usuario_id')->nullable()->constrained('users')->nullOnDelete();
+=======
+            $table->foreignId('usuario_id')->nullable()->constrained('usuarios')->nullOnDelete();
+>>>>>>> develop
             $table->foreignId('producto_id')->nullable()->constrained('productos')->nullOnDelete();
 
             $table->date('fecha_inicio')->nullable();

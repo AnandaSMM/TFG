@@ -1,0 +1,217 @@
+<!-- Barra de búsqueda -->
+<div class="home-container">
+  <section class="hero-section">
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <h1 class="hero-title">
+      Alquila equipamiento <br />
+      deportivo <span>cerca de ti</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Encuentra lo que necesitas, cuando lo necesitas  <span>{{user.nombre}}</span>
+    </p>
+
+
+    <div class="hero-features">
+      <div class="hero-feature">
+        <div class="feature-icon"><img src="/shield.png"></div>
+        <div>
+          <strong>Usuarios verificados</strong>
+          <p>Compra y alquila con confianza</p>
+        </div>
+      </div>
+      <div class="hero-feature">
+        <div class="feature-icon"><img src="/star.png"></div>
+        <div>
+          <strong>Calidad garantizada</strong>
+          <p>Equipos revisados y confiables</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+  <div class="search-section">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Buscar productos..."
+      [(ngModel)]="busqueda"
+      (input)="filtrarProductos()"
+    />
+
+    <div class="category-dropdown">
+      <button
+        class="category-button"
+        type="button"
+        (click)="toggleMenuCategorias()"
+      >
+        Categorías
+        <span *ngIf="categoriasSeleccionadas.length > 0">
+          ({{ categoriasSeleccionadas.length }})
+        </span>
+      </button>
+
+      <div
+        class="category-menu"
+        *ngIf="categoriasMenuAbierto"
+      >
+        <div *ngIf="categorias.length === 0" class="empty-categories">
+          No hay categorías disponibles
+        </div>
+
+        <div
+          class="category-check"
+          *ngFor="let categoria of categorias; trackBy: trackByCategoriaId"
+        >
+          <input
+            type="checkbox"
+            [id]="'categoria-' + categoria.id"
+            [checked]="estaCategoriaSeleccionada(categoria.id)"
+            (change)="toggleCategoria(categoria.id, $event)"
+          />
+
+          <label [for]="'categoria-' + categoria.id">
+            {{ categoria.nombre }}
+          </label>
+        </div>
+
+        <div class="category-actions">
+          <button
+            type="button"
+            class="clear-button"
+            (click)="limpiarCategorias()"
+          >
+            Limpiar
+          </button>
+
+          <button
+            type="button"
+            class="apply-button"
+            (click)="aplicarFiltros()"
+          >
+            Aplicar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="selected-categories"
+    *ngIf="categoriasSeleccionadas.length > 0"
+  >
+    <span
+      class="category-chip"
+      *ngFor="let categoria of getCategoriasSeleccionadasDetalle(); trackBy: trackByCategoriaId"
+    >
+      {{ categoria.nombre }}
+
+      <button
+        type="button"
+        class="chip-remove"
+        aria-label="Quitar categoría"
+        (click)="quitarCategoria(categoria.id)"
+      >
+        ×
+      </button>
+    </span>
+  </div>
+
+  <div *ngIf="error" class="state-message error-message">
+    {{ error }}
+  </div>
+
+  <div
+    *ngIf="!cargando && !error && productosFiltrados.length === 0"
+    class="state-message warning-message"
+  >
+    No se encontraron productos
+  </div>
+
+  <div *ngIf="cargando" class="floating-loader">
+    <div class="spinner-border text-primary"></div>
+  </div>
+
+  <div
+    class="products-grid"
+    *ngIf="!error && productosFiltrados.length > 0"
+    [class.loading-grid]="cargando"
+  >
+    <div
+      class="product-card"
+      *ngFor="let producto of productosFiltrados; trackBy: trackByProductoId"
+      role="button"
+      tabindex="0"
+      (click)="abrirModal(producto)"
+    >
+      <div class="product-image-wrapper">
+        <img
+          [src]="
+            producto.imagenes && producto.imagenes.length
+              ?  storareUrl + '/' + producto.imagenes[0].imagen
+              : 'producto-placeholder.jpg'
+          "
+          class="product-image"
+          alt="Imagen del producto"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+
+      <div class="product-content">
+        <h3 class="product-title">
+          {{ producto.nombre }}
+        </h3>
+
+        <p class="product-location">
+          <img src="/pin1.svg" class="pin">{{ producto.localidad || 'Sin localidad' }}
+        </p>
+
+        <p class="product-price">
+          {{ producto.precio_alquiler_dia || 'No indicado' }} €/día
+        </p>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginación -->
+  <div
+    class="pagination-wrapper"
+    *ngIf="!cargando && !error && totalPaginas > 1"
+  >
+    <nav aria-label="Paginación de productos">
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="paginaActual === 1">
+          <button class="page-link" (click)="cambiarPagina(paginaActual - 1)">
+            Anterior
+          </button>
+        </li>
+
+        <li
+          class="page-item"
+          *ngFor="let pagina of paginasVisibles()"
+          [class.active]="pagina === paginaActual"
+        >
+          <button class="page-link" (click)="cambiarPagina(pagina)">
+            {{ pagina }}
+          </button>
+        </li>
+
+        <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+          <button class="page-link" (click)="cambiarPagina(paginaActual + 1)">
+            Siguiente
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<detalles-producto
+  [producto]="productoSeleccionado"
+  [modalAbierto]="modalAbierto"
+  (cerrar)="cerrarModal()"
+></detalles-producto>

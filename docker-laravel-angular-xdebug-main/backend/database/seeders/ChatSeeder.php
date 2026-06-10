@@ -41,13 +41,7 @@ class ChatSeeder extends Seeder
                 'leido'       => false, // 
                 'fecha'       => now()->subMinutes(2),
             ],
-            [
-                'emisor_id'   => 3, 
-                'receptor_id' => 1, 
-                'mensaje'     => 'Juan, me confirmas o no tt???',
-                'leido'       => false, // 
-                'fecha'       => now()->subMinutes(1),
-            ],
+            
             
         ]);
     }

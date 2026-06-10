@@ -1,8 +1,4 @@
 import { Routes } from '@angular/router';
-<<<<<<< HEAD
-
-export const routes: Routes = [];
-=======
 import { RegisterComponent } from './pages/register/register.component';
 import { LoginComponent } from './pages/login/login.component';
 import { authGuard } from './guards/auth.guard';
@@ -33,4 +29,3 @@ export const routes: Routes = [
   { path: 'mis-productos', component: MisProductosComponent, canActivate: [authGuard] },
   {path: 'perfil/:id',component: PerfilUsuarioComponent, canActivate: [authGuard]}
 ];
->>>>>>> develop

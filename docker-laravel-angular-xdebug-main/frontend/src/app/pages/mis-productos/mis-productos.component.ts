@@ -5,6 +5,7 @@ import { forkJoin } from 'rxjs';
 import { ProductoService } from '../../services/producto.service';
 import { AlquilerService } from '../../services/alquiler.service';
 import { CategoriaService } from '../../services/categoria.service';
+import { environment } from '../../../environtments/environtment';
 
 @Component({
   selector: 'app-mis-productos',
@@ -47,7 +48,7 @@ export class MisProductosComponent implements OnInit {
   imagenesNuevas:          File[]   = [];
   imagenesNuevasPreview:   string[] = [];
 
-  private readonly storageUrl = 'http://localhost:8000/storage/';
+  private readonly storageUrl = environment.storageUrl+'/';
 
   ngOnInit(): void {
     this.cargarCategorias();

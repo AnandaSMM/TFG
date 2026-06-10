@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environtments/environtment';
 
 export interface Alquiler {
   id: number;
@@ -12,7 +13,7 @@ export interface Alquiler {
 })
 export class AlquilerService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8000/api';
+  private apiUrl =  environment.apiUrl;
 
   alquilarProducto(productoId: number, data: any) {
     const token = localStorage.getItem('token');

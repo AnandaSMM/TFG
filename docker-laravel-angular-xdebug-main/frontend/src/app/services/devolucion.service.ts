@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environtments/environtment';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 export class DevolucionService {
   private http = inject(HttpClient);
 
-  private apiUrl = 'http://localhost:8000/api';
+  private apiUrl = environment.apiUrl;
 
   confirmarDevolucion(data: any) {
     const token = localStorage.getItem('token');

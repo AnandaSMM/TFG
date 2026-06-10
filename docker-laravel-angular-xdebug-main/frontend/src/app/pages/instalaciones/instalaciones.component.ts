@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import * as L from 'leaflet';
+import { environment } from '../../../environtments/environtment';
 
 // Fix para los iconos de Leaflet con webpack/Angular
 const iconDefault = L.icon({
@@ -24,7 +25,7 @@ L.Marker.prototype.options.icon = iconDefault;
 })
 export class InstalacionesComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8000/api/instalaciones';
+  private apiUrl = `${environment.apiUrl}/instalaciones`;
 
   mapa!: L.Map;
   instalaciones: any[] = [];

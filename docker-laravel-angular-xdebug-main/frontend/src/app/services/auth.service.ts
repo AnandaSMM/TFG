@@ -1,13 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environtments/environtment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8000/api';
+  private apiUrl =  environment.apiUrl;
 
   register(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, data);
@@ -21,7 +22,7 @@ export class AuthService {
   }
 
   getUser() {
-    return this.http.get('http://localhost:8000/api/user', {
+    return this.http.get( `${environment.apiUrl}/user`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }

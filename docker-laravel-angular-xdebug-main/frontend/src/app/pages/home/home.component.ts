@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { CategoriaService } from '../../services/categoria.service';
 import { DetallesProductoComponent } from '../detalles/detalles-producto.component';
 import { ProductoService } from '../../services/producto.service';
+import { environment } from '../../../environtments/environtment';
 
 interface ImagenProducto {
   id: number;
@@ -58,7 +59,8 @@ export class HomeComponent implements OnInit {
   private categoriaService = inject(CategoriaService);
   private productoService = inject(ProductoService);
   private timeoutBusqueda: any;
-  private apiUrl = 'http://localhost:8000/api/productos';
+  private apiUrl =  `${environment.apiUrl}/productos`;
+  storareUrl = environment.storageUrl;
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
   categorias: Categoria[] = [];

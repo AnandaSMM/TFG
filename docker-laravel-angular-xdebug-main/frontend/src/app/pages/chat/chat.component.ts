@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from '../../../environtments/environtment';
+
 
 @Component({
   selector: 'app-chat',
@@ -13,6 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 export class ChatComponent implements OnInit {
   private chatservice = inject(ChatService);
   private route = inject(ActivatedRoute);
+  storareUrl = environment.storageUrl;
   
   misConversaciones: any[] = [];
   miId: number | null = null;

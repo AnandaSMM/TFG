@@ -1,13 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environtments/environtment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8000/api';
+  private apiUrl = environment.apiUrl;
 
   listarConversaciones(): Observable<any> {
     const token = localStorage.getItem('token');

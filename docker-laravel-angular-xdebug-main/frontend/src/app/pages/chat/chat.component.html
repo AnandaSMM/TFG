@@ -20,7 +20,7 @@
           <div class="tarjeta-chat" (click)="seleccionarChat(chat)">
             
             <div class="avatar-container">
-              <img [src]="chat.foto ? 'http://localhost:8000/storage/' + chat.foto : 'assets/default-avatar.png'" alt="Avatar" class="avatar-img">
+              <img [src]="chat.foto ? storareUrl + '/' + chat.foto : 'assets/default-avatar.png'" alt="Avatar" class="avatar-img">
               <span class="estado-online"></span>
             </div>
 
@@ -54,7 +54,7 @@
   <main class="zona-conversacion">
     
     <div class="chat-activo-header">
-      <img [src]="chatSeleccionado.foto ? 'http://localhost:8000/storage/' + chatSeleccionado.foto : 'assets/default-avatar.png'" class="avatar-img">
+      <img [src]="chatSeleccionado.foto ? storareUrl + '/' + chatSeleccionado.foto : 'assets/default-avatar.png'" class="avatar-img">
       <h3>{{ chatSeleccionado.nombre }}</h3>
     </div>
 

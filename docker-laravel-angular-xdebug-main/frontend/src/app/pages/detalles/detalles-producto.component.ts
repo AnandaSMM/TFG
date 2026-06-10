@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { environment } from '../../../environtments/environtment';
 
 @Component({
   selector: 'detalles-producto',
@@ -14,12 +15,12 @@ export class DetallesProductoComponent {
 
   @Output() cerrar = new EventEmitter<void>();
 
-  private baseUrl = 'http://localhost:8000/storage/';
+  private baseUrl = environment.storageUrl;
   imagenActual = 0;
 
   getImagenUrl(ruta: string | null | undefined): string {
     if (!ruta) return 'producto-placeholder.jpg';
-    return `${this.baseUrl}${ruta}`;
+    return `${this.baseUrl}/${ruta}`;
   }
 
   getImagenActual(): string {

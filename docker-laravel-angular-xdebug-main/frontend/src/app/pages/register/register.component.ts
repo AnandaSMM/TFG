@@ -34,22 +34,19 @@ export class RegisterComponent {
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       telefono:['',Validators.pattern(/^[0-9+\s()-]{6,20}$/)],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
       password_confirmation: ['', Validators.required]
     },
     { validators: passwordsMatchValidator }
   );
 
   onSubmit(): void {
+    console.log('submit', this.registerForm.value, this.registerForm.valid);
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
     }
 
-    if (this.registerForm.hasError('passwordsMismatch')) {
-      this.errorMessage = 'Las contraseñas no coinciden';
-      return;
-    }
 
     this.loading = true;
     this.errorMessage = '';
@@ -59,7 +56,8 @@ export class RegisterComponent {
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        this.errorMessage ;
+        console.error(err);
+        this.errorMessage = err.error?.message || 'Error al crear la cuenta';
         this.loading = false;
       }
     });

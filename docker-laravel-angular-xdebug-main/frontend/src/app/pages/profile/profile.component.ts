@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
-
+import { environment } from '../../../environtments/environtment';
 
 @Component({
   selector: 'app-profile',
@@ -140,7 +140,7 @@ export class ProfileComponent implements OnInit {
     }
 
     // Si es una imagen local del storage
-    return 'http://localhost:8000/storage/' + this.userData.foto;
+    return environment.storageUrl + '/' + this.userData.foto;
   }
 
 }

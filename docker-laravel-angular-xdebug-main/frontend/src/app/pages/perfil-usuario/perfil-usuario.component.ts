@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Location } from '@angular/common';
+import { environment } from '../../../environtments/environtment';
 
 @Component({
   selector: 'app-perfil-usuario',
@@ -24,7 +25,8 @@ export class PerfilUsuarioComponent implements OnInit {
   alquileresTotales = 0;
   alquileresActivos = 0;
 
-  private apiUrl = 'http://localhost:8000/api';
+  private apiUrl =  environment.apiUrl;
+  private storageUrl =  environment.storageUrl;
 
   ngOnInit(): void {
     const usuarioId = this.route.snapshot.paramMap.get('id');
@@ -55,7 +57,7 @@ export class PerfilUsuarioComponent implements OnInit {
 
   getFotoUsuario(): string {
     return this.userData.foto
-      ? `http://localhost:8000/storage/${this.userData.foto}`
+      ? `${environment.storageUrl}/${this.userData.foto}`
       : 'https://i.pravatar.cc/200';
   }
 

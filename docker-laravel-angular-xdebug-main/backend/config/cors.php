@@ -19,9 +19,13 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:4200'],
+    'allowed_origins' => [
+        'http://localhost:4200',
+    ],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '/^http:\/\/192\.168\.\d+\.\d+:4200$/',
+    ],
 
     'allowed_headers' => ['*'],
 

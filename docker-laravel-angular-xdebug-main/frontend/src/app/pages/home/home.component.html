@@ -150,7 +150,7 @@
         <img
           [src]="
             producto.imagenes && producto.imagenes.length
-              ? 'http://localhost:8000/storage/' + producto.imagenes[0].imagen
+              ?  storareUrl + '/' + producto.imagenes[0].imagen
               : 'producto-placeholder.jpg'
           "
           class="product-image"

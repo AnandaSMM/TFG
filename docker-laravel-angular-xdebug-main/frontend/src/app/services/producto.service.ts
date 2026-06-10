@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environtments/environtment';
 
 export interface ImagenProducto {
   id: number;
@@ -39,7 +40,7 @@ export interface RespuestaProductosPaginados {
 @Injectable({ providedIn: 'root' })
 export class ProductoService {
   private http = inject(HttpClient);
-  private base = 'http://localhost:8000/api';
+  private base = environment.apiUrl;
 
   private get headers() {
     return { Authorization: `Bearer ${localStorage.getItem('token')}` };
